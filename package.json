@@ -20,7 +20,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --fix .",
+    "lint:nofix": "eslint .",
+    "compile": "tsc --project . --noEmit --pretty --skipLibCheck",
+    "format": "prettier --write .",
+    "format:check": "prettier --list-different ."
   },
   "eslintConfig": {
     "extends": [

@@ -1,24 +1,24 @@
 {
-    "arrowParens": "avoid",
-    "bracketSameLine": false,
-    "bracketSpacing": true,
-    "jsxSingleQuote": true,
-    "printWidth": 80,
-    "proseWrap": "never",
-    "quoteProps": "as-needed",
-    "semi": false,
-    "singleQuote": true,
-    "tabWidth": 4,
-    "trailingComma": "es5",
-    "useTabs": false,
-    "vueIndentScriptAndStyle": true,
+  "arrowParens": "avoid",
+  "bracketSameLine": false,
+  "bracketSpacing": true,
+  "jsxSingleQuote": true,
+  "printWidth": 80,
+  "proseWrap": "never",
+  "quoteProps": "as-needed",
+  "semi": false,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "useTabs": false,
+  "vueIndentScriptAndStyle": true,
 
-    "overrides": [
-        {
-            "files": ["*.html"],
-            "options": {
-                "printWidth": 90
-            }
-        }
-    ]
+  "overrides": [
+    {
+      "files": ["*.html"],
+      "options": {
+        "printWidth": 90
+      }
+    }
+  ]
 }
