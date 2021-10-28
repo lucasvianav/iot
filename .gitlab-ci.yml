@@ -1,0 +1,31 @@
+image: node:latest
+
+stages:
+  - pre
+  - lint
+  - build
+
+install:
+  stage: pre
+  script:
+    - npm install
+
+eslint:
+  stage: lint
+  script:
+    - npm run lint:nofix
+
+typescript:
+  stage: lint
+  script:
+    - npm run compile
+
+prettier:
+  stage: lint
+  script:
+    - npm run format:check
+
+build:
+  stage: build
+  script:
+    - npm build
