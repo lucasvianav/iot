@@ -58,7 +58,7 @@ module.exports = {
     //     'error',
     //     { 'ignorearrayIndexes': true, 'ignoreDefaultValues': true }
     // ],
-    'no-use-before-define': 'error',
+    // 'no-use-before-define': 'error',
     'vars-on-top': 'error',
     'require-await': 'error',
     'prefer-regex-literals': 'error',
@@ -177,5 +177,6 @@ module.exports = {
     'arrow-spacing': 'error',
     'arrow-parens': ['error', 'as-needed'],
     'arrow-body-style': ['error', 'as-needed'],
+    'no-undef': 'off',
   },
 }
