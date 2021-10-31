@@ -4,7 +4,7 @@ import Footer from './components/core/footer'
 
 function App() {
   return (
-    <body className='App'>
+    <body className='App text-white'>
       <main className='App-header'>
         <p>
           Edit <code>src/App.tsx</code> and save to reload.

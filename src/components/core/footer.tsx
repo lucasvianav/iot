@@ -2,7 +2,7 @@ import React from 'react'
 
 function Footer() {
   return (
-    <footer className='text-white m-auto w-100 px-4 px-md-5'>
+    <footer className='m-auto w-100 px-4 px-md-5'>
       <hr className='my-4 mx-auto'></hr>
       <div className='px-4'>
         <p>
