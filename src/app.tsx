@@ -1,4 +1,6 @@
 import React from 'react'
+import '../node_modules/@fortawesome/fontawesome-free/js/fontawesome.min.js'
+import '../node_modules/@fortawesome/fontawesome-free/js/solid.min.js'
 import './app.scss'
 import Footer from './components/core/footer'
 import Header from './components/core/header'
