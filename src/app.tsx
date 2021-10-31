@@ -1,9 +1,8 @@
 import React from 'react'
-import '../node_modules/@fortawesome/fontawesome-free/js/fontawesome.min.js'
-import '../node_modules/@fortawesome/fontawesome-free/js/solid.min.js'
 import './app.scss'
 import Footer from './components/core/footer'
 import Header from './components/core/header'
+import DataCard from './components/shared/data-card'
 
 function App() {
   return (
@@ -11,9 +10,12 @@ function App() {
       <Header />
 
       <main className='App-header'>
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
+        <DataCard
+          title='Temperatura'
+          description='Ar-condicionado 1'
+          data='23ºC'
+          icon='fas fa-snowflake'
+        />
 
         <a
           className='App-link'
