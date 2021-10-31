@@ -109,7 +109,7 @@ module.exports = {
       },
     ],
     'capitalized-comments': [
-      'error',
+      'warn',
       'never',
       { ignoreConsecutiveComments: true },
     ],
@@ -146,7 +146,7 @@ module.exports = {
     // ],
     'lines-between-class-members': 'error',
     'max-len': [
-      'error',
+      'warn',
       {
         code: 80,
         ignoreUrls: true,

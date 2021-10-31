@@ -9,8 +9,6 @@ function Footer() {
           © 2021 Aplicação desenvolvida por Antônio Pedro Medrado (99999999),
           Lucas Viana (10748409) e Yann Amado (99999999).
         </p>
-
-        <p>Grupo 7, Time 2. SSC0952 — Internet das Coisas.</p>
       </div>
     </footer>
   )
