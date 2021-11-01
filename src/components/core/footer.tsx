@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Footer() {
+export function Footer() {
   return (
     <footer className='mx-auto w-100 px-4 px-md-5 text-center mw-1200px'>
       <hr className='my-4 mx-auto'></hr>

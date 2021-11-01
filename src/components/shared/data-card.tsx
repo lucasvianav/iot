@@ -2,7 +2,7 @@ import React from 'react'
 import { Card } from 'react-bootstrap'
 import { DataCardProps } from '../../models'
 
-function DataCard(props: DataCardProps) {
+export function DataCard(props: DataCardProps) {
   return (
     <Card bg='dark' border='primary' className='d-flex flex-row'>
       <Card.Header

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Container, Navbar } from 'react-bootstrap'
 import { HeaderProps } from '../../models'
 
-function Header(props: HeaderProps) {
+export function Header(props: HeaderProps) {
   const locale = 'pt-br'
   const [time, setTime] = useState(new Date())
 
