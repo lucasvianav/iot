@@ -1,13 +1,13 @@
-export interface DataCardProps {
+export class DataCardProps {
   /** data name */
-  title?: string
+  title = ''
 
   /** data description */
-  description?: string
+  description = ''
 
   /** awesome icon's class */
-  icon?: string
+  icon = ''
 
   /** the actual value */
-  data?: string
+  data!: string
 }

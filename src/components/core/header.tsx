@@ -16,10 +16,10 @@ function Header(props: HeaderProps) {
   })
 
   return (
-    <Navbar variant='dark' bg='dark' expand='md'>
-      <Container>
+    <Navbar variant='dark' bg='dark' className='mb-4'>
+      <Container className='mw-1200px'>
         <Navbar.Brand href='#home'>SSC0952 — Internet das Coisas</Navbar.Brand>
-        <Navbar.Text>
+        <Navbar.Text className='d-none d-sm-block'>
           {time.toLocaleTimeString(locale, {
             timeStyle: props.displaySeconds ? 'medium' : 'short',
           })}
