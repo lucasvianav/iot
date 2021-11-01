@@ -7,7 +7,7 @@ import DataCard from './components/shared/data-card'
 function App() {
   return (
     <body className='App text-white'>
-      <Header />
+      <Header displaySeconds={true} />
 
       <main className='App-header'>
         <DataCard
@@ -16,15 +16,6 @@ function App() {
           data='23ºC'
           icon='fas fa-snowflake'
         />
-
-        <a
-          className='App-link'
-          href='https://reactjs.org'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          Learn React
-        </a>
       </main>
 
       <Footer />

@@ -78,15 +78,15 @@ module.exports = {
       { allowShortCircuit: true, allowTernary: true },
     ],
     'array-bracket-newline': ['error', { multiline: true, minItems: 3 }],
-    'array-bracket-spacing': [
-      'error',
-      'always',
-      {
-        singleValue: false,
-        objectsInArrays: true,
-        arraysInArrays: true,
-      },
-    ],
+    // 'array-bracket-spacing': [
+    //   'error',
+    //   'always',
+    //   {
+    //     singleValue: false,
+    //     objectsInArrays: true,
+    //     arraysInArrays: true,
+    //   },
+    // ],
     'array-element-newline': ['error', { multiline: true, minItems: 3 }],
     'block-spacing': 'error',
     'brace-style': ['error', 'stroustrup', { allowSingleLine: true }],
