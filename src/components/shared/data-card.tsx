@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card } from 'react-bootstrap'
-import { DataCardProps } from '../../models/data-card.models'
+import { DataCardProps } from '../../models'
 
 function DataCard(props: DataCardProps) {
   return (
