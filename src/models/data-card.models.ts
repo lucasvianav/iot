@@ -1,12 +1,18 @@
 export class DataCardProps {
   /** data name */
-  title = ''
+  title? = ''
 
   /** data description */
-  description = ''
+  description? = ''
 
   /** awesome icon's class */
-  icon = ''
+  icon? = ''
+
+  /** display spinner instead of data */
+  loading? = false
+
+  /** display error message instead of data */
+  error? = false
 
   /** the actual value */
   data!: string
