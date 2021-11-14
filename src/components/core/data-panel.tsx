@@ -1,13 +1,15 @@
-import React from 'react'
-import { useSensors } from '../../hooks'
+import React, { useContext } from 'react'
+import { SensorsContext } from '../../hooks'
 import { DataCard } from '../shared'
 
 export function DataPanel() {
-  const air = useSensors.airConditioner()
-  const humidity = useSensors.humidity()
-  const luminosity = useSensors.luminosity()
-  const movement = useSensors.movement()
-  const temperature = useSensors.temperature()
+  const {
+    air,
+    humidity,
+    luminosity,
+    movement,
+    temperature,
+  } = useContext(SensorsContext)
 
   return (
     <div className='d-flex flex-column gap-3'>
@@ -64,7 +66,7 @@ export function DataPanel() {
           <DataCard
             title='Luminosidade'
             description='Sala 2'
-            data={`${luminosity.luminosity}%`}
+            data={`${luminosity.luminosity} lx`}
             loading={luminosity.loading}
             error={luminosity.error}
             icon={luminosity.luminosity > 50 ? 'sun' : 'moon'}

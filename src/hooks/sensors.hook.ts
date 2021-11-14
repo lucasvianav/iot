@@ -2,8 +2,6 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Endpoints, enviroment, getRoute } from '../utils'
 
-// tODO: const incrementTemperature = (): any => {}
-
 const paramsMock = {
   params: {
     zip: '94040,us',
@@ -88,8 +86,8 @@ export const useSensors = {
       temperature, loading, error, on,
       toggle: () => setOn(!on),
       sleep: (delay: number) => setTimeout(() => setOn(false), delay/60000),
-      upTemperature: () => setTemperature(temperature + 1),
-      downTemperature: () => setTemperature(temperature - 1),
+      up: () => temperature < 26 ? setTemperature(temperature + 1) : null,
+      down: () => temperature > 11 ? setTemperature(temperature - 1) : null,
     }
   },
 
@@ -149,7 +147,7 @@ export const useSensors = {
         setValue: setLuminosity,
         setLoading,
         setError,
-        getData: r => r.data.clouds.all,
+        getData: r => r.data.main.pressure,
       }
     )
 
