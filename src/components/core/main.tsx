@@ -5,11 +5,11 @@ import { DataCard } from '../shared'
 // TODO: controle ar: +/-, on/off
 
 export function Main() {
-  const airConditioner = useSensors.airConditioner()
+  const air = useSensors.airConditioner()
   const humidity = useSensors.humidity()
   const luminosity = useSensors.luminosity()
   const movement = useSensors.movement()
-  const roomTemperature = useSensors.temperature()
+  const temperature = useSensors.temperature()
 
   return (
     <main className='px-5 m-auto mw-1200px w-100'>
@@ -19,9 +19,9 @@ export function Main() {
             <DataCard
               title='Temperatura'
               description='Ar-condicionado 23'
-              data={`${airConditioner.temperature}ºC`}
-              loading={airConditioner.loading}
-              error={airConditioner.error}
+              data={air.on ? `${air.temperature}ºC` : 'Desligado'}
+              loading={air.loading}
+              error={air.error}
               icon='snowflake'
             />
           </div>
@@ -30,9 +30,9 @@ export function Main() {
             <DataCard
               title='Sensação Térmica'
               description='Sala 2'
-              data={`${roomTemperature.temperature}ºC`}
-              loading={roomTemperature.loading}
-              error={roomTemperature.error}
+              data={`${temperature.temperature}ºC`}
+              loading={temperature.loading}
+              error={temperature.error}
               icon='thermometer-quarter'
             />
           </div>

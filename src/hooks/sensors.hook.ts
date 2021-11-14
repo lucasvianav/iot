@@ -66,6 +66,7 @@ export const useSensors = {
   },
 
   airConditioner: () => {
+    const [on, setOn] = useState(true)
     const [temperature, setTemperature] = useState(-1)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
@@ -79,11 +80,17 @@ export const useSensors = {
         setValue: setTemperature,
         setLoading,
         setError,
-        getData: r => r.data.main.temp,
+        getData: r => Math.round(r.data.main.temp),
       }
     )
 
-    return { temperature, loading, error }
+    return {
+      temperature, loading, error, on,
+      toggle: () => setOn(!on),
+      sleep: (delay: number) => setTimeout(() => setOn(false), delay/60000),
+      upTemperature: () => setTemperature(temperature + 1),
+      downTemperature: () => setTemperature(temperature - 1),
+    }
   },
 
   humidity: () => {
