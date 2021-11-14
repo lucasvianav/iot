@@ -27,7 +27,7 @@ module.exports = {
     // '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    'no-extra-parens': ['error', 'all'],
+    // 'no-extra-parens': ['error', 'all'],
     'no-unreachable-loop': 'error',
     semi: ['error', 'never'],
     'accessor-pairs': 'error',
@@ -68,7 +68,7 @@ module.exports = {
     'prefer-regex-literals': 'error',
     'prefer-named-capture-group': 'warn',
     'no-with': 'error',
-    'no-warning-comments': 'error',
+    // 'no-warning-comments': 'error',
     'no-void': 'error',
     'no-useless-return': 'error',
     'no-useless-concat': 'error',
@@ -77,7 +77,7 @@ module.exports = {
       'error',
       { allowShortCircuit: true, allowTernary: true },
     ],
-    'array-bracket-newline': ['error', { multiline: true, minItems: 3 }],
+    'array-bracket-newline': ['error', { multiline: true, minItems: 5 }],
     // 'array-bracket-spacing': [
     //   'error',
     //   'always',
@@ -87,7 +87,7 @@ module.exports = {
     //     arraysInArrays: true,
     //   },
     // ],
-    'array-element-newline': ['error', { multiline: true, minItems: 3 }],
+    'array-element-newline': ['error', { multiline: true, minItems: 5 }],
     'block-spacing': 'error',
     'brace-style': ['error', 'stroustrup', { allowSingleLine: true }],
     camelcase: ['error', { ignoreGlobals: true }],
@@ -116,17 +116,17 @@ module.exports = {
     'implicit-arrow-linebreak': ['error', 'beside'],
     indent: ['error', 2, { SwitchCase: 1 }],
     'jsx-quotes': ['error', 'prefer-single'],
-    'key-spacing': [
-      'error',
-      {
-        align: {
-          beforeColon: false,
-          afterColon: true,
-          on: 'value',
-          mode: 'minimum',
-        },
-      },
-    ],
+    // 'key-spacing': [
+    //   'error',
+    //   {
+    //     align: {
+    //       beforeColon: false,
+    //       afterColon: true,
+    //       on: 'value',
+    //       mode: 'minimum',
+    //     },
+    //   },
+    // ],
     // 'lines-around-comment': [
     //     'error',
     //     {
@@ -154,7 +154,7 @@ module.exports = {
         ignoreRegExpLiterals: true,
       },
     ],
-    'multiline-ternary': ['error', 'always-multiline'],
+    // 'multiline-ternary': ['error', 'always-multiline'],
     'no-lonely-if': 'error',
     'no-trailing-spaces': 'error',
     'no-unneeded-ternary': 'error',
