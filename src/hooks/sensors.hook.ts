@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { useEffect, useState } from 'react'
-import { Endpoints, enviroment } from '../utils'
+import React, { useEffect, useState } from 'react'
+import { Endpoints, enviroment, getRoute } from '../utils'
 
 // tODO: const incrementTemperature = (): any => {}
 
@@ -12,31 +12,55 @@ const paramsMock = {
   },
 }
 
+const useApi =
+  <T>(
+    args: { endpoint: string; opts: any },
+    fn: {
+      setValue: React.Dispatch<React.SetStateAction<T>>;
+      setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+      setError: React.Dispatch<React.SetStateAction<boolean>>;
+      getData: (response: { data: any }) => T;
+    },
+    delay = 300000
+  ) => {
+    const fetch = () => {
+      axios
+        .get(args.endpoint, args.opts)
+        .then(r => {
+          fn.setValue(fn.getData(r))
+          fn.setLoading(false)
+        })
+        .catch(() => {
+          fn.setError(true)
+          fn.setLoading(false)
+        })
+    }
+
+    useEffect(() => {
+      fetch()
+      const timer = setInterval(fetch, delay)
+      return () => clearInterval(timer)
+    }, [])
+  }
+
 export const useSensors = {
   temperature: () => {
     const [temperature, setTemperature] = useState(-1)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
-    const endpoint = enviroment.backendURL + Endpoints.roomTemperature
 
-    const fetchTemperature = () => {
-      axios
-        .get(endpoint, paramsMock)
-        .then(r => {
-          setTemperature(r.data.main.feels_like)
-          setLoading(false)
-        })
-        .catch(() => {
-          setError(true)
-          setLoading(false)
-        })
-    }
-
-    useEffect(() => {
-      fetchTemperature()
-      const timer = setInterval(fetchTemperature, 300000)
-      return () => clearInterval(timer)
-    }, [])
+    useApi<number>(
+      {
+        endpoint: getRoute(Endpoints.roomTemperature),
+        opts: paramsMock,
+      },
+      {
+        setValue: setTemperature,
+        setLoading,
+        setError,
+        getData: r => r.data.main.feels_like,
+      }
+    )
 
     return { temperature, loading, error }
   },
@@ -45,26 +69,19 @@ export const useSensors = {
     const [temperature, setTemperature] = useState(-1)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
-    const endpoint = enviroment.backendURL + Endpoints.airConditionerTemperature
 
-    const fetchTemperature = () => {
-      axios
-        .get(endpoint, paramsMock)
-        .then(r => {
-          setTemperature(r.data.main.temp)
-          setLoading(false)
-        })
-        .catch(() => {
-          setError(true)
-          setLoading(false)
-        })
-    }
-
-    useEffect(() => {
-      fetchTemperature()
-      const timer = setInterval(fetchTemperature, 300000)
-      return () => clearInterval(timer)
-    }, [])
+    useApi<number>(
+      {
+        endpoint: getRoute(Endpoints.airConditionerTemperature),
+        opts: paramsMock,
+      },
+      {
+        setValue: setTemperature,
+        setLoading,
+        setError,
+        getData: r => r.data.main.temp,
+      }
+    )
 
     return { temperature, loading, error }
   },
@@ -73,26 +90,19 @@ export const useSensors = {
     const [humidity, setHumidity] = useState(-1)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
-    const endpoint = enviroment.backendURL + Endpoints.humidity
 
-    const fetchHumidity = () => {
-      axios
-        .get(endpoint, paramsMock)
-        .then(r => {
-          setHumidity(r.data.main.humidity)
-          setLoading(false)
-        })
-        .catch(() => {
-          setError(true)
-          setLoading(false)
-        })
-    }
-
-    useEffect(() => {
-      fetchHumidity()
-      const timer = setInterval(fetchHumidity, 300000)
-      return () => clearInterval(timer)
-    }, [])
+    useApi<number>(
+      {
+        endpoint: getRoute(Endpoints.humidity),
+        opts: paramsMock,
+      },
+      {
+        setValue: setHumidity,
+        setLoading,
+        setError,
+        getData: r => r.data.main.humidity,
+      }
+    )
 
     return { humidity, loading, error }
   },
@@ -101,26 +111,19 @@ export const useSensors = {
     const [movement, setMovement] = useState(false)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
-    const endpoint = enviroment.backendURL + Endpoints.movement
 
-    const fetchMovement = () => {
-      axios
-        .get(endpoint, paramsMock)
-        .then(() => {
-          setMovement(Math.random() > 0.5)
-          setLoading(false)
-        })
-        .catch(() => {
-          setError(true)
-          setLoading(false)
-        })
-    }
-
-    useEffect(() => {
-      fetchMovement()
-      const timer = setInterval(fetchMovement, 300000)
-      return () => clearInterval(timer)
-    }, [])
+    useApi<boolean>(
+      {
+        endpoint: getRoute(Endpoints.movement),
+        opts: paramsMock,
+      },
+      {
+        setValue: setMovement,
+        setLoading,
+        setError,
+        getData: () => Math.random() > 0.5,
+      }
+    )
 
     return { movement, loading, error }
   },
@@ -129,26 +132,19 @@ export const useSensors = {
     const [luminosity, setLuminosity] = useState(-1)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
-    const endpoint = enviroment.backendURL + Endpoints.movement
 
-    const fetchLuminosity = () => {
-      axios
-        .get(endpoint, paramsMock)
-        .then(r => {
-          setLuminosity(r.data.clouds.all)
-          setLoading(false)
-        })
-        .catch(() => {
-          setError(true)
-          setLoading(false)
-        })
-    }
-
-    useEffect(() => {
-      fetchLuminosity()
-      const timer = setInterval(fetchLuminosity, 300000)
-      return () => clearInterval(timer)
-    }, [])
+    useApi<number>(
+      {
+        endpoint: getRoute(Endpoints.luminosity),
+        opts: paramsMock,
+      },
+      {
+        setValue: setLuminosity,
+        setLoading,
+        setError,
+        getData: r => r.data.clouds.all,
+      }
+    )
 
     return { luminosity, loading, error }
   },

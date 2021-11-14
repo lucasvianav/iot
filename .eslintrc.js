@@ -13,7 +13,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'eslint:recommended',
     'plugin:react/recommended',
-    'plugin:prettier/recommended',
+    // 'plugin:prettier/recommended',
   ],
   root: true,
   env: {
@@ -22,7 +22,7 @@ module.exports = {
   },
   ignorePatterns: ['.eslintrc.js', '**/migrations/*'],
   rules: {
-    'prettier/prettier': 'error',
+    // 'prettier/prettier': 'error',
     '@typescript-eslint/interface-name-prefix': 'off',
     // '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
