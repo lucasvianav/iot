@@ -1,32 +1,15 @@
 import React from 'react'
-import {
-  useAirConditionerTemperature,
-  useHumidity,
-  useRoomTemperature,
-} from '../../hooks'
+import { useSensors } from '../../hooks'
 import { DataCard } from '../shared'
 
-// TODO: card p/ luminosidade e movimento
 // TODO: controle ar: +/-, on/off
 
 export function Main() {
-  const {
-    temperature: airCondTemperature,
-    loading: airCondLoading,
-    error: airCondError,
-  } = useAirConditionerTemperature()
-
-  const {
-    temperature: roomTemperature,
-    loading: roomTemperatureLoading,
-    error: roomTemperatureError,
-  } = useRoomTemperature()
-
-  const {
-    humidity,
-    loading: humidityLoading,
-    error: humidityError,
-  } = useHumidity()
+  const airConditioner = useSensors.airConditioner()
+  const humidity = useSensors.humidity()
+  const luminosity = useSensors.luminosity()
+  const movement = useSensors.movement()
+  const roomTemperature = useSensors.temperature()
 
   return (
     <main className='px-5 m-auto mw-1200px w-100'>
@@ -36,10 +19,10 @@ export function Main() {
             <DataCard
               title='Temperatura'
               description='Ar-condicionado 23'
-              data={`${airCondTemperature}ºC`}
-              loading={airCondLoading}
-              error={airCondError}
-              icon='fas fa-snowflake'
+              data={`${airConditioner.temperature}ºC`}
+              loading={airConditioner.loading}
+              error={airConditioner.error}
+              icon='snowflake'
             />
           </div>
 
@@ -47,10 +30,10 @@ export function Main() {
             <DataCard
               title='Sensação Térmica'
               description='Sala 2'
-              data={`${roomTemperature}ºC`}
-              loading={roomTemperatureLoading}
-              error={roomTemperatureError}
-              icon='fas fa-thermometer'
+              data={`${roomTemperature.temperature}ºC`}
+              loading={roomTemperature.loading}
+              error={roomTemperature.error}
+              icon='thermometer-quarter'
             />
           </div>
         </div>
@@ -60,10 +43,34 @@ export function Main() {
             <DataCard
               title='Umidade do ar'
               description='Sala 2'
-              data={`${humidity}%`}
-              loading={humidityLoading}
-              error={humidityError}
-              icon='fas fa-wind'
+              data={`${humidity.humidity}%`}
+              loading={humidity.loading}
+              error={humidity.error}
+              icon='wind'
+            />
+          </div>
+
+          <div className='col-md-6'>
+            <DataCard
+              title='Movimento'
+              description='Sala 2'
+              data={movement.movement ? 'Detectado' : 'Sala vazia'}
+              loading={movement.loading}
+              error={movement.error}
+              icon='running'
+            />
+          </div>
+        </div>
+
+        <div className='row gap-3 gap-md-0'>
+          <div className='col-md-6'>
+            <DataCard
+              title='Luminosidade'
+              description='Sala 2'
+              data={`${luminosity.luminosity}%`}
+              loading={luminosity.loading}
+              error={luminosity.error}
+              icon={luminosity.luminosity > 50 ? 'sun' : 'moon'}
             />
           </div>
         </div>

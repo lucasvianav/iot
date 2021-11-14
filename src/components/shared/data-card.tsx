@@ -7,7 +7,7 @@ export function DataCard(props: DataCardProps) {
     <Card bg='dark' border='primary' className='d-flex flex-row'>
       <Card.Header
         className='
-          bg-primary
+          bg-primary text-center
           d-flex justify-content-center
           align-items-center border-0
         '
@@ -15,7 +15,11 @@ export function DataCard(props: DataCardProps) {
         title={props.title}
       >
         <div className='p-0 m-0' style={{ width: '65px' }}>
-          <i className={`${props.icon} m-0 p-0`}></i>
+          <i
+            className={`${props.icon?.indexOf(' ') === -1 ? 'fas fa-' : ''}${
+              props.icon
+            } m-0 p-0`}
+          ></i>
         </div>
       </Card.Header>
 
