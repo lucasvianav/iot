@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card } from 'react-bootstrap'
+import { Card, Spinner } from 'react-bootstrap'
 import { DataCardProps } from '../../models'
 
 export function DataCard(props: DataCardProps) {
@@ -31,8 +31,20 @@ export function DataCard(props: DataCardProps) {
           {props.description}
         </Card.Subtitle>
 
-        <Card.Text className='text-center' style={{ fontSize: '22pt' }}>
-          {props.data}
+        <Card.Text
+          className='text-center'
+          style={{ fontSize: '22pt' }}
+          as='div'
+        >
+          {!props.loading && !props.error ? (
+            props.data
+          ) : props.error ? (
+            'Ocorreu um erro...'
+          ) : (
+            <Spinner animation='border' role='status'>
+              <span className='visually-hidden'>Loading...</span>
+            </Spinner>
+          )}
         </Card.Text>
       </Card.Body>
     </Card>
