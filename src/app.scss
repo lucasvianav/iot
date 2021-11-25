@@ -1,0 +1,10 @@
+@import 'src/index';
+
+.accordion-item, button.accordion-button {
+  background-color: $moonlight !important;
+
+  .collapsed {
+    color: white;
+  };
+}
+
