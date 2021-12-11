@@ -16,15 +16,27 @@ export function ControlPanel() {
   }
 
   return (
-    <Form className='row'>
-      <div className='col-6 d-flex align-item-center'>
-        <Form.Check
-          type='switch'
-          label={air.on ? 'Ligado' : 'Desligado'}
-          className='m-auto'
-          checked={air.on}
-          onChange={air.toggle}
-        />
+    <Form>
+      <div className='row'>
+        <div className='col-6 d-flex align-item-center'>
+          <Form.Check
+            type='switch'
+            label={air.on ? 'Ligado' : 'Desligado'}
+            className='m-auto'
+            checked={air.on}
+            onChange={air.toggle}
+          />
+        </div>
+
+        <div className='col-6'>
+          <TemperatureControl
+            title='Temperatura'
+            minusFn={() => controlTemperature(air.down)}
+            invalidFn={() => invalid}
+            valueFn={() => (air.on ? air.temperature : 'OFF')}
+            plusFn={() => controlTemperature(air.up)}
+          />
+        </div>
       </div>
 
       <div className='col-6'>
