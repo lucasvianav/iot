@@ -17,10 +17,12 @@ export function ControlPanel() {
     }
   }
 
+  const colClasses = 'd-flex justify-content-center'
+
   return (
     <Form>
-      <div className='row' style={{ rowGap: '20px' }}>
-        <div className='col-6 col-md-3 d-flex align-item-center'>
+      <div className='row mb-3' style={{ rowGap: '20px' }}>
+        <div className={`${colClasses} col-6`}>
           <Toggler
             title='Status'
             labelFn={() => (air.on ? 'Ligado' : 'Desligado')}
@@ -29,7 +31,18 @@ export function ControlPanel() {
           />
         </div>
 
-        <div className='col-6 col-md-3 d-flex justify-content-center'>
+        <div className={`${colClasses} col-6`}>
+          <Toggler
+            title='Status (Sala Vazia)'
+            labelFn={() => (air.on ? 'Ligado' : 'Desligado')}
+            checkedFn={() => air.on}
+            onChangeFn={air.toggle}
+          />
+        </div>
+      </div>
+
+      <div className='row mt-3' style={{ rowGap: '20px' }}>
+        <div className={`${colClasses} col-6 col-md-4`}>
           <TemperatureControl
             title='Temperatura'
             minusFn={() => controlTemperature(air.down)}
@@ -39,7 +52,7 @@ export function ControlPanel() {
           />
         </div>
 
-        <div className='col-6 col-md-3 d-flex justify-content-center'>
+        <div className={`${colClasses} col-6 col-md-4`}>
           <TemperatureControl
             title='Temperatura Máxima'
             minusFn={() => controlTemperature(air.down)}
@@ -49,7 +62,7 @@ export function ControlPanel() {
           />
         </div>
 
-        <div className='col-6 col-md-3 d-flex justify-content-center'>
+        <div className={`${colClasses} col-6 col-md-4`}>
           <TemperatureControl
             title='Temperatura Mínima'
             minusFn={() => controlTemperature(air.down)}
