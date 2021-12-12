@@ -89,7 +89,7 @@ module.exports = {
     // ],
     'array-element-newline': ['error', { multiline: true, minItems: 5 }],
     'block-spacing': 'error',
-    'brace-style': ['error', 'stroustrup', { allowSingleLine: true }],
+    'brace-style': ['error', '1tbs', { allowSingleLine: true }],
     camelcase: ['error', { ignoreGlobals: true }],
     'function-paren-newline': ['error', 'consistent'],
     'function-call-argument-newline': ['error', 'consistent'],

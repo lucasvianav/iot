@@ -1,7 +1,7 @@
 export interface TogglerProps {
   title?: string
   labelFn: () => string
-  checkedFn: () => true
+  checkedFn: () => boolean
   onChangeFn: () => void
   disabled: boolean
 }

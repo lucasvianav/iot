@@ -9,7 +9,7 @@ export interface TemperatureControlProps {
   plusFn: () => void
 
   /** function to be called to evaluate the temperature value */
-  valueFn: () => number
+  valueFn: () => number|string
 
   /** function to be called to evaluate if the current value is invalid */
   invalidFn: () => boolean

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { AirConditionerHookModel, AirConditionerRequestBodyModel } from '../models/sensors.models'
 import { Endpoints, getRoute } from '../utils'
 
 const params = {
@@ -18,32 +19,28 @@ const useApi =
       setError: React.Dispatch<React.SetStateAction<boolean>>;
       getData: (response: { data: any }) => T;
     },
-    delay = 300000
+    opts: {
+      delay?: number,
+      dependencies?: any[]
+    } = {}
   ) => {
+    opts.delay = opts.delay || 60000
+    opts.dependencies = opts.dependencies || []
+
     const fetch = () => {
+      fn.setLoading(true)
       axios
         .get(args.endpoint, args.opts || {})
-        .then(r => {
-          fn.setValue(fn.getData(r))
-          fn.setLoading(false)
-        })
-        .catch(() => {
-          fn.setError(true)
-          fn.setLoading(false)
-        })
+        .then(r => fn.setValue(fn.getData(r)))
+        .catch(() => fn.setError(true))
+        .finally(() => fn.setLoading(false))
     }
 
-    if (delay) {
-      useEffect(() => {
-        fetch()
-        const timer = setInterval(fetch, delay)
-        return () => clearInterval(timer)
-      }, [])
-    }
-
-    else {
+    useEffect(() => {
       fetch()
-    }
+      const timer = setInterval(fetch, opts.delay)
+      return () => clearInterval(timer)
+    }, opts.dependencies)
   }
 
 const postApi =
@@ -54,21 +51,20 @@ const postApi =
       opts?: any
     },
     fn: {
-      callback: () => any
-      setLoading: React.Dispatch<React.SetStateAction<boolean>>
-      setError: React.Dispatch<React.SetStateAction<boolean>>
+      callback?: () => any
+      resolve: () => void
+      reject: (reason?: any) => void
     }
   ) => {
     axios
       .post(args.endpoint, args.body || {}, args.opts || {})
-      .then(() => {
-        fn.setLoading(false)
+      .then(fn.resolve)
+      .catch(fn.reject)
+      .finally(() => {
+        if (fn.callback) {
+          fn.callback()
+        }
       })
-      .catch(() => {
-        fn.setError(true)
-        fn.setLoading(false)
-      })
-      .finally(fn.callback)
   }
 
 export const useSensors = {
@@ -93,7 +89,7 @@ export const useSensors = {
     return { temperature, loading, error }
   },
 
-  airConditioner: () => {
+  airConditioner: (): AirConditionerHookModel => {
     const [on, setOn] = useState(false)
     const [onEmpty, setOnEmpty] = useState(false)
     const [temperature, setTemperature] = useState(-1)
@@ -101,6 +97,8 @@ export const useSensors = {
     const [minTemperature, setMinTemperature] = useState(-1)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
+
+    const [refresh, setRefresh] = useState(false)
 
     const setAirConditioner = (r: any) => {
       setOn(r.ONL)
@@ -110,42 +108,56 @@ export const useSensors = {
       setMinTemperature(r.T_MIN)
     }
 
-    const fn = {
-      setError,
-      setLoading,
-      callback: () => useApi<number>(
-        { endpoint: getRoute(Endpoints.airConditionerInfo) },
-        {
-          setValue: setAirConditioner,
-          setLoading,
-          setError,
-          getData: r => r.data,
-        },
-        0
-      ),
+    const isTemperatureValid = (type: string, value: number): boolean => {
+      let isValid
+
+      if (type === 'max') {
+        isValid = value >= 17 && value <= 23
+      } else if (type === 'min') {
+        isValid = value >= 16 && value <= 22
+      } else {
+        isValid = value >= 16 && value <= 23
+      }
+
+      return isValid
     }
 
-    const api = (endpoint: Endpoints, value: boolean|number) => postApi(
-      { endpoint: getRoute(endpoint, value.toString()) }, fn
-    )
-
     useApi<number>(
-      { endpoint: getRoute(Endpoints.airConditionerInfo) },
+      { endpoint: getRoute(Endpoints.airConditionerGet) },
       {
         setValue: setAirConditioner,
         setLoading,
         setError,
         getData: r => r.data,
-      }
+      },
+      { dependencies: [refresh] }
+    )
+
+    const post = (body: AirConditionerRequestBodyModel) => (
+      new Promise<void>((resolve, reject) => {
+        postApi(
+          { endpoint: Endpoints.airConditionerPost, body },
+          {
+            resolve: () => {
+              resolve()
+              setRefresh(!refresh)
+            },
+            reject,
+          }
+        )
+      })
     )
 
     return {
-      temperature, maxTemperature, minTemperature, loading, error, on, onEmpty,
-      toggle: () => api(Endpoints.airConditionerToggle, !on),
-      toggleEmpty: () => api(Endpoints.airConditionerToggleEmpty, !onEmpty),
-      setMax: (t: number) => api(Endpoints.airConditionerMaxTemperature, t),
-      setMin: (t: number) => api(Endpoints.airConditionerMinTemperature, t),
-      set: (t: number) => api(Endpoints.airConditionerTemperature, t),
+      temperature,
+      maxTemperature,
+      minTemperature,
+      loading,
+      error,
+      on,
+      onEmpty,
+      isTemperatureValid,
+      post,
     }
   },
 

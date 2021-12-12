@@ -1,8 +1,9 @@
 import React from 'react'
+import { AirConditionerHookModel } from '../models/sensors.models'
 import { useSensors } from './sensors.hook'
 
 export const SensorsContext = React.createContext({
-  air: {} as any,
+  air: {} as AirConditionerHookModel,
   humidity20: {} as any,
   humidity21: {} as any,
   humidity22: {} as any,

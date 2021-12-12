@@ -8,7 +8,8 @@ export const getRoute = (endpoint: Endpoints, ...params: string[]) => {
   return enviroment.backURL + endpoint
 }
 export const enum Endpoints {
-  airConditionerInfo = 'atuador/ar_condicionado/get/23',
+  airConditionerGet = 'atuador/ar_condicionado/get/23',
+  airConditionerPost = 'acao/ar_condicionado',
   airConditionerToggle = 'acao/ar_condicionado/liga_desliga',
   airConditionerToggleEmpty = 'acao/ar_condicionado/estado_vazia',
   airConditionerTemperature = 'acao/ar_condicionado/temp/{{0}}',
