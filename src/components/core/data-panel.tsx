@@ -5,10 +5,14 @@ import { DataCard } from '../shared'
 export function DataPanel() {
   const {
     air,
-    humidity,
+    humidity20,
+    humidity21,
+    humidity22,
     luminosity,
     movement,
-    temperature,
+    temperature20,
+    temperature21,
+    temperature22,
   } = useContext(SensorsContext)
 
   return (
@@ -28,10 +32,34 @@ export function DataPanel() {
         <div className='col-md-6'>
           <DataCard
             title='Sensação Térmica'
-            description='Sala 2'
-            data={`${temperature.temperature}ºC`}
-            loading={temperature.loading}
-            error={temperature.error}
+            description='Sala 2 - Sensor 20'
+            data={`${temperature20.temperature}ºC`}
+            loading={temperature20.loading}
+            error={temperature20.error}
+            icon='thermometer-quarter'
+          />
+        </div>
+      </div>
+
+      <div className='row gap-3 gap-md-0'>
+        <div className='col-md-6'>
+          <DataCard
+            title='Sensação Térmica'
+            description='Sala 2 - Sensor 21'
+            data={`${temperature21.temperature}ºC`}
+            loading={temperature21.loading}
+            error={temperature21.error}
+            icon='thermometer-quarter'
+          />
+        </div>
+
+        <div className='col-md-6'>
+          <DataCard
+            title='Sensação Térmica'
+            description='Sala 2 - Sensor 22'
+            data={`${temperature22.temperature}ºC`}
+            loading={temperature22.loading}
+            error={temperature22.error}
             icon='thermometer-quarter'
           />
         </div>
@@ -41,10 +69,34 @@ export function DataPanel() {
         <div className='col-md-6'>
           <DataCard
             title='Umidade do ar'
-            description='Sala 2'
-            data={`${humidity.humidity}%`}
-            loading={humidity.loading}
-            error={humidity.error}
+            description='Sala 2 - Sensor 20'
+            data={`${humidity20.humidity}%`}
+            loading={humidity20.loading}
+            error={humidity20.error}
+            icon='wind'
+          />
+        </div>
+
+        <div className='col-md-6'>
+          <DataCard
+            title='Umidade do ar'
+            description='Sala 2 - Sensor 21'
+            data={`${humidity21.humidity}%`}
+            loading={humidity21.loading}
+            error={humidity21.error}
+            icon='wind'
+          />
+        </div>
+      </div>
+
+      <div className='row gap-3 gap-md-0'>
+        <div className='col-md-6'>
+          <DataCard
+            title='Umidade do ar'
+            description='Sala 2 - Sensor 22'
+            data={`${humidity22.humidity}%`}
+            loading={humidity22.loading}
+            error={humidity22.error}
             icon='wind'
           />
         </div>
@@ -66,10 +118,10 @@ export function DataPanel() {
           <DataCard
             title='Luminosidade'
             description='Sala 2'
-            data={`${luminosity.luminosity} lx`}
+            data={`Lâmpada ${luminosity.luminosity ? 'acesa' : 'apagada'}`}
             loading={luminosity.loading}
             error={luminosity.error}
-            icon={luminosity.luminosity > 50 ? 'sun' : 'moon'}
+            icon={luminosity.luminosity ? 'sun' : 'moon'}
           />
         </div>
       </div>

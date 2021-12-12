@@ -1,11 +1,16 @@
 import { enviroment } from './enviroment.utils'
 
-export const getRoute = (endpoint: Endpoints) => enviroment.backURL + endpoint
+export const getRoute = (endpoint: Endpoints, ...params: string[]) => {
+  params.forEach((param, i) => {
+    endpoint = endpoint.replace(`{{${i}}}`, param) as Endpoints
+  })
 
+  return enviroment.backURL + endpoint
+}
 export const enum Endpoints {
-  airConditionerTemperature = 'data/2.5/weather',
-  humidity = 'data/2.5/weather',
-  luminosity = 'data/2.5/weather',
-  movement = 'data/2.5/weather',
-  roomTemperature = 'data/2.5/weather',
+  airConditionerTemperature = 'atuador/ar_condicionado/get/23',
+  humidity = 'dado/umidade/list/{{0}}',
+  luminosity = 'dado/luz/list/26',
+  movement = 'dado/movimento/list/25',
+  roomTemperature = 'dado/temperatura/list/{{0}}',
 }

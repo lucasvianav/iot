@@ -6,6 +6,7 @@ export function InputField(props: InputFieldProps) {
     <input
       style={{ width: props.width }}
       className={`bg-dark ${props.className}`}
+      disabled={props.disabled}
       value='OFF'
       readOnly
     />

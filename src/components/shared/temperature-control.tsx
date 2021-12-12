@@ -11,6 +11,7 @@ export function TemperatureControl(props: TemperatureControlProps) {
           variant='outline-secondary'
           className='d-flex flex-row align-items-center'
           onClick={props.minusFn}
+          disabled={props.disabled}
         >
           <i className='fas fa-minus text-primary'></i>
         </Button>
@@ -20,6 +21,7 @@ export function TemperatureControl(props: TemperatureControlProps) {
             className='text-center'
             value={props.valueFn()}
             isInvalid={props.invalidFn()}
+            disabled={props.disabled}
             readOnly
           />
         </div>
@@ -28,6 +30,7 @@ export function TemperatureControl(props: TemperatureControlProps) {
           variant='outline-secondary'
           className='d-flex flex-row align-items-center'
           onClick={props.plusFn}
+          disabled={props.disabled}
         >
           <i className='fas fa-plus text-primary'></i>
         </Button>

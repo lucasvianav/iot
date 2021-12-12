@@ -28,15 +28,17 @@ export function ControlPanel() {
             labelFn={() => (air.on ? 'Ligado' : 'Desligado')}
             checkedFn={() => air.on}
             onChangeFn={air.toggle}
+            disabled={air.error}
           />
         </div>
 
         <div className={`${colClasses} col-6`}>
           <Toggler
             title='Status (Sala Vazia)'
-            labelFn={() => (air.on ? 'Ligado' : 'Desligado')}
-            checkedFn={() => air.on}
-            onChangeFn={air.toggle}
+            labelFn={() => (air.onEmpty ? 'Ligado' : 'Desligado')}
+            checkedFn={() => air.onEmpty}
+            onChangeFn={air.toggleEmpty}
+            disabled={!air.on || air.error}
           />
         </div>
       </div>
@@ -49,26 +51,29 @@ export function ControlPanel() {
             invalidFn={() => invalid}
             valueFn={() => (air.on ? air.temperature : 'OFF')}
             plusFn={() => controlTemperature(air.up)}
+            disabled={!air.on || air.error}
           />
         </div>
 
         <div className={`${colClasses} col-6 col-md-4`}>
           <TemperatureControl
-            title='Temperatura Máxima'
-            minusFn={() => controlTemperature(air.down)}
+            title='Temp. Máxima (sala)'
+            minusFn={() => controlTemperature(air.downMax)}
             invalidFn={() => invalid}
-            valueFn={() => (air.on ? air.temperature : 'OFF')}
-            plusFn={() => controlTemperature(air.up)}
+            valueFn={() => (air.on ? air.maxTemperature : 'OFF')}
+            plusFn={() => controlTemperature(air.upMax)}
+            disabled={!air.on || air.error}
           />
         </div>
 
         <div className={`${colClasses} col-6 col-md-4`}>
           <TemperatureControl
-            title='Temperatura Mínima'
-            minusFn={() => controlTemperature(air.down)}
+            title='Temp. Mínima (sala)'
+            minusFn={() => controlTemperature(air.downMax)}
             invalidFn={() => invalid}
-            valueFn={() => (air.on ? air.temperature : 'OFF')}
-            plusFn={() => controlTemperature(air.up)}
+            valueFn={() => (air.on ? air.minTemperature : 'OFF')}
+            plusFn={() => controlTemperature(air.upMax)}
+            disabled={!air.on || air.error}
           />
         </div>
       </div>

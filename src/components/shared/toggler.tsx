@@ -12,6 +12,7 @@ export function Toggler(props: TogglerProps) {
         className='m-auto'
         checked={props.checkedFn()}
         onChange={props.onChangeFn}
+        disabled={props.disabled}
       />
     </div>
   )

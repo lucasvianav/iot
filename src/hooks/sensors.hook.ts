@@ -1,18 +1,17 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Endpoints, enviroment, getRoute } from '../utils'
+import { Endpoints, getRoute } from '../utils'
 
-const paramsMock = {
+const params = {
   params: {
-    zip: '94040,us',
-    appid: enviroment.key,
-    units: 'metric',
+    limit: 1,
+    offset: 0,
   },
 }
 
-const useApi =
+const useApiGet =
   <T>(
-    args: { endpoint: string; opts: any },
+    args: { endpoint: string; opts?: any },
     fn: {
       setValue: React.Dispatch<React.SetStateAction<T>>;
       setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,7 +22,7 @@ const useApi =
   ) => {
     const fetch = () => {
       axios
-        .get(args.endpoint, args.opts)
+        .get(args.endpoint, args.opts || {})
         .then(r => {
           fn.setValue(fn.getData(r))
           fn.setLoading(false)
@@ -42,21 +41,21 @@ const useApi =
   }
 
 export const useSensors = {
-  temperature: () => {
+  temperature: (id: number) => {
     const [temperature, setTemperature] = useState(-1)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
 
-    useApi<number>(
+    useApiGet<number>(
       {
-        endpoint: getRoute(Endpoints.roomTemperature),
-        opts: paramsMock,
+        endpoint: getRoute(Endpoints.roomTemperature, id.toString()),
+        opts: params,
       },
       {
         setValue: setTemperature,
         setLoading,
         setError,
-        getData: r => r.data.main.feels_like,
+        getData: r => r.data[0].VALOR,
       }
     )
 
@@ -64,48 +63,61 @@ export const useSensors = {
   },
 
   airConditioner: () => {
-    const [on, setOn] = useState(true)
+    const [on, setOn] = useState(false)
+    const [onEmpty, setOnEmpty] = useState(false)
     const [temperature, setTemperature] = useState(-1)
+    const [maxTemperature, setMaxTemperature] = useState(-1)
+    const [minTemperature, setMinTemperature] = useState(-1)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
 
-    useApi<number>(
+    const setAirConditioner = (r: any) => {
+      setOn(r.ONL)
+      setOnEmpty(r.ONL_VAZIO)
+      setTemperature(r.TEMPERATURA)
+      setMaxTemperature(r.T_MAX)
+      setMinTemperature(r.T_MIN)
+    }
+
+    const refreshData = () => useApiGet<number>(
+      { endpoint: getRoute(Endpoints.airConditionerTemperature) },
       {
-        endpoint: getRoute(Endpoints.airConditionerTemperature),
-        opts: paramsMock,
-      },
-      {
-        setValue: setTemperature,
+        setValue: setAirConditioner,
         setLoading,
         setError,
-        getData: r => Math.round(r.data.main.temp),
+        getData: r => r.data,
       }
     )
+    refreshData()
 
     return {
-      temperature, loading, error, on,
+      temperature, maxTemperature, minTemperature, loading, error, on, onEmpty,
+      toggleEmpty: () => setOnEmpty(!onEmpty),
       toggle: () => setOn(!on),
-      sleep: (delay: number) => setTimeout(() => setOn(false), delay/60000),
+      upMax: () => temperature < 26 ? setMaxTemperature(temperature + 1) : null,
+      downMax: () => temperature > 11 ? setMaxTemperature(temperature - 1) : null,
+      upMin: () => temperature < 26 ? setMinTemperature(temperature + 1) : null,
+      downMin: () => temperature > 11 ? setMinTemperature(temperature - 1) : null,
       up: () => temperature < 26 ? setTemperature(temperature + 1) : null,
       down: () => temperature > 11 ? setTemperature(temperature - 1) : null,
     }
   },
 
-  humidity: () => {
+  humidity: (id: number) => {
     const [humidity, setHumidity] = useState(-1)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
 
-    useApi<number>(
+    useApiGet<number>(
       {
-        endpoint: getRoute(Endpoints.humidity),
-        opts: paramsMock,
+        endpoint: getRoute(Endpoints.humidity, id.toString()),
+        opts: params,
       },
       {
         setValue: setHumidity,
         setLoading,
         setError,
-        getData: r => r.data.main.humidity,
+        getData: r => r.data[0].VALOR,
       }
     )
 
@@ -117,16 +129,16 @@ export const useSensors = {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
 
-    useApi<boolean>(
+    useApiGet<boolean>(
       {
         endpoint: getRoute(Endpoints.movement),
-        opts: paramsMock,
+        opts: params,
       },
       {
         setValue: setMovement,
         setLoading,
         setError,
-        getData: () => Math.random() > 0.5,
+        getData: r => r.data[0].TEMPO,
       }
     )
 
@@ -134,20 +146,20 @@ export const useSensors = {
   },
 
   luminosity: () => {
-    const [luminosity, setLuminosity] = useState(-1)
+    const [luminosity, setLuminosity] = useState(false)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
 
-    useApi<number>(
+    useApiGet<boolean>(
       {
         endpoint: getRoute(Endpoints.luminosity),
-        opts: paramsMock,
+        opts: params,
       },
       {
         setValue: setLuminosity,
         setLoading,
         setError,
-        getData: r => r.data.main.pressure,
+        getData: r => r.data[0].VALOR,
       }
     )
 
