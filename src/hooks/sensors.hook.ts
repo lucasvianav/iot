@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { ResponseModel } from '../models'
 import { AirConditionerHookModel, AirConditionerRequestBodyModel } from '../models/sensors.models'
 import { Endpoints, getRoute } from '../utils'
 
@@ -14,10 +15,10 @@ const useApi =
   <T>(
     args: { endpoint: string; opts?: any },
     fn: {
-      setValue: React.Dispatch<React.SetStateAction<T>>;
-      setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-      setError: React.Dispatch<React.SetStateAction<boolean>>;
-      getData: (response: { data: any }) => T;
+      setValue: React.Dispatch<React.SetStateAction<T>>
+      setLoading: React.Dispatch<React.SetStateAction<boolean>>
+      setError: React.Dispatch<React.SetStateAction<ResponseModel|boolean>>
+      getData: (response: { data: any }) => T
     },
     opts: {
       delay?: number,
@@ -29,10 +30,14 @@ const useApi =
 
     const fetch = () => {
       fn.setLoading(true)
+      fn.setError(false)
       axios
         .get(args.endpoint, args.opts || {})
         .then(r => fn.setValue(fn.getData(r)))
-        .catch(() => fn.setError(true))
+        .catch(err => {
+          const {status, data: { detail: message }} = err.response
+          fn.setError({ status, message })
+        })
         .finally(() => fn.setLoading(false))
     }
 
@@ -71,7 +76,7 @@ export const useSensors = {
   temperature: (id: number) => {
     const [temperature, setTemperature] = useState(-1)
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(false)
+    const [error, setError] = useState<ResponseModel|boolean>(false)
 
     useApi<number>(
       {
@@ -86,7 +91,7 @@ export const useSensors = {
       }
     )
 
-    return { temperature, loading, error }
+    return { temperature, loading, error, name: `Sensor de Temperatura ${id}` }
   },
 
   airConditioner: (): AirConditionerHookModel => {
@@ -96,7 +101,7 @@ export const useSensors = {
     const [maxTemperature, setMaxTemperature] = useState(-1)
     const [minTemperature, setMinTemperature] = useState(-1)
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(false)
+    const [error, setError] = useState<ResponseModel|boolean>(false)
 
     const [refresh, setRefresh] = useState(false)
 
@@ -158,13 +163,14 @@ export const useSensors = {
       onEmpty,
       isTemperatureValid,
       post,
+      name: 'Ar-condicionado',
     }
   },
 
   humidity: (id: number) => {
     const [humidity, setHumidity] = useState(-1)
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(false)
+    const [error, setError] = useState<ResponseModel|boolean>(false)
 
     useApi<number>(
       {
@@ -179,13 +185,13 @@ export const useSensors = {
       }
     )
 
-    return { humidity, loading, error }
+    return { humidity, loading, error, name: `Sensor de Umidade ${id}` }
   },
 
   movement: () => {
     const [movement, setMovement] = useState(false)
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(false)
+    const [error, setError] = useState<ResponseModel|boolean>(false)
 
     useApi<boolean>(
       {
@@ -200,13 +206,13 @@ export const useSensors = {
       }
     )
 
-    return { movement, loading, error }
+    return { movement, loading, error, name: 'Sensor de Movimento' }
   },
 
   luminosity: () => {
     const [luminosity, setLuminosity] = useState(false)
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(false)
+    const [error, setError] = useState<ResponseModel|boolean>(false)
 
     useApi<boolean>(
       {
@@ -221,6 +227,6 @@ export const useSensors = {
       }
     )
 
-    return { luminosity, loading, error }
+    return { luminosity, loading, error, name: 'Sensor de Luz' }
   },
 }

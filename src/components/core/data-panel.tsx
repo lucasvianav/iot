@@ -1,8 +1,11 @@
-import React, { useContext } from 'react'
-import { SensorsContext } from '../../hooks'
+import React, { useContext, useEffect } from 'react'
+import { SensorsContext, ToastsContext } from '../../contexts'
+import { ResponseModel } from '../../models'
 import { DataCard } from '../shared'
 
 export function DataPanel() {
+  const { createToast } = useContext(ToastsContext)
+
   const {
     air,
     humidity20,
@@ -15,6 +18,32 @@ export function DataPanel() {
     temperature22,
   } = useContext(SensorsContext)
 
+  const handleToasts = (sensor: {
+    error: ResponseModel | boolean
+    name: string
+  }) => {
+    useEffect(() => {
+      if (sensor.error) {
+        const err = sensor.error as ResponseModel
+        createToast({
+          title: `Erro ${err.status} - ${sensor.name}`,
+          body: err.message,
+          delay: 7000,
+        })
+      }
+    }, [sensor.error])
+  }
+
+  handleToasts(air)
+  handleToasts(humidity20)
+  handleToasts(temperature20)
+  handleToasts(luminosity)
+  handleToasts(movement)
+  handleToasts(humidity21)
+  handleToasts(temperature21)
+  handleToasts(humidity22)
+  handleToasts(temperature22)
+
   return (
     <div className='d-flex flex-column gap-3'>
       <div className='row gap-3 gap-md-0'>
@@ -24,7 +53,7 @@ export function DataPanel() {
             description='Ar-condicionado 23'
             data={air.on ? `${air.temperature}ºC` : 'Desligado'}
             loading={air.loading}
-            error={air.error}
+            error={air.error as boolean}
             icon='snowflake'
           />
         </div>

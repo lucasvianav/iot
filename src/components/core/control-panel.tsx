@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
-import { SensorsContext } from '../../hooks'
+import { SensorsContext, ToastsContext } from '../../contexts'
 import { AirConditionerRequestBodyModel } from '../../models/sensors.models'
 import TemperatureControl from '../shared/temperature-control'
 import Toggler from '../shared/toggler'
 
 export function ControlPanel() {
   const { air } = useContext(SensorsContext)
+  const { createToast } = useContext(ToastsContext)
 
   const [on, setOn] = useState(air.on)
   const [onEmpty, setOnEmpty] = useState(air.onEmpty)
@@ -85,13 +86,14 @@ export function ControlPanel() {
     }
 
     if (flag) {
-      air.post(body)
+      air
+        .post(body)
         .then(() => reset())
-        .catch(() => alert('ERRO!'))
+        .catch(() => createToast({ title: 'Erro', body: 'Erro 123' }))
     }
   }
 
-  useEffect(() => reset(false), [air.error, air.loading])
+  useEffect(() => reset(false), [(air.error as boolean), air.loading])
 
   return (
     <Form>
@@ -102,7 +104,7 @@ export function ControlPanel() {
             labelFn={() => (on ? 'Ligado' : 'Desligado')}
             checkedFn={() => on}
             onChangeFn={() => set(setOn, !on)}
-            disabled={air.error || air.loading}
+            disabled={(air.error as boolean) || air.loading}
           />
         </div>
 
@@ -112,7 +114,7 @@ export function ControlPanel() {
             labelFn={() => (onEmpty ? 'Ligado' : 'Desligado')}
             checkedFn={() => onEmpty}
             onChangeFn={() => set(setOnEmpty, !onEmpty)}
-            disabled={!on || air.error || air.loading}
+            disabled={!on || (air.error as boolean) || air.loading}
           />
         </div>
       </div>
@@ -129,7 +131,7 @@ export function ControlPanel() {
             plusFn={() => {
               set(setTemp, '', setTemperature, setInvalid, temperature + 1)
             }}
-            disabled={!on || air.error || air.loading}
+            disabled={!on || (air.error as boolean) || air.loading}
           />
         </div>
 
@@ -156,7 +158,7 @@ export function ControlPanel() {
                 maxTemperature + 1
               )
             }}
-            disabled={!on || air.error || air.loading}
+            disabled={!on || (air.error as boolean) || air.loading}
           />
         </div>
 
@@ -183,27 +185,30 @@ export function ControlPanel() {
                 minTemperature + 1
               )
             }}
-            disabled={!on || air.error || air.loading}
+            disabled={!on || (air.error as boolean) || air.loading}
           />
         </div>
       </div>
 
       <div className='row d-flex justify-content-end gap-3'>
         <div className='px-3 mt-3 mx-auto'>
-          {
-            !edited
-              ? ''
-              :
-              <div className='text-muted mt-3'>
-                <small>
-                  * Valores editados, para retornar aos originais,
-                  aperte o botão resetar. Eles são sincronizados a cada minuto.
-                </small>
-              </div>
-          }
+          {!edited ? (
+            ''
+          ) : (
+            <div className='text-muted mt-3'>
+              <small>
+                * Valores editados, para retornar aos originais, aperte o botão
+                resetar. Eles são sincronizados a cada minuto.
+              </small>
+            </div>
+          )}
           <hr />
         </div>
-        <Button className='col-3' variant='outline-primary' onClick={() => reset()}>
+        <Button
+          className='col-3'
+          variant='outline-primary'
+          onClick={() => reset()}
+        >
           Resetar
         </Button>
         <Button className='col-3' variant='primary' onClick={save}>
