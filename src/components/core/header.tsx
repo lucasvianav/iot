@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Navbar } from 'react-bootstrap'
 import { HeaderProps } from '../../models'
+import { enviroment } from '../../utils'
 
 export function Header(props: HeaderProps) {
-  const locale = 'pt-br'
   const [time, setTime] = useState(new Date())
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export function Header(props: HeaderProps) {
       <Container className='mw-1200px'>
         <Navbar.Brand href='#home'>SSC0952 — Internet das Coisas</Navbar.Brand>
         <Navbar.Text className='d-none d-sm-block'>
-          {time.toLocaleTimeString(locale, {
+          {time.toLocaleTimeString(enviroment.locale, {
             timeStyle: props.displaySeconds ? 'medium' : 'short',
           })}
         </Navbar.Text>

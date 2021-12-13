@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { Accordion, ToastContainer } from 'react-bootstrap'
 import './app.scss'
 import { ControlPanel, DataPanel, Footer, Header } from './components/core'
@@ -8,19 +8,17 @@ import { ToastsContext } from './contexts'
 function App() {
   const { toasts } = useContext(ToastsContext)
 
-  useEffect(() => console.log(toasts), [toasts])
-
   return (
     <>
       <ToastContainer
         position='top-end'
+        className='p-3'
         style={{
           position: 'absolute',
           zIndex: 9999,
-          margin: '60px 20px',
         }}
       >
-        {toasts.slice(0, 4).map((toast, i) => (
+        {toasts.map((toast, i) => (
           <Toast toast={toast} key={i} />
         ))}
       </ToastContainer>

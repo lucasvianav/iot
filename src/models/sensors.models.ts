@@ -9,7 +9,7 @@ export interface AirConditionerHookModel {
   on: boolean
   onEmpty: boolean
   isTemperatureValid: (type: string, value: number) => boolean
-  post: (body: AirConditionerRequestBodyModel) => Promise<void>
+  post: (body: AirConditionerRequestBodyModel) => Promise<ResponseModel>
   name: string
 }
 

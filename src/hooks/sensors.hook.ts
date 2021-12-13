@@ -58,13 +58,16 @@ const postApi =
     fn: {
       callback?: () => any
       resolve: () => void
-      reject: (reason?: any) => void
+      reject: (error: ResponseModel) => void
     }
   ) => {
     axios
       .post(args.endpoint, args.body || {}, args.opts || {})
       .then(fn.resolve)
-      .catch(fn.reject)
+      .catch(err => {
+        const {status, data: { detail: message }} = err.response
+        fn.reject({ status, message })
+      })
       .finally(() => {
         if (fn.callback) {
           fn.callback()
@@ -139,12 +142,12 @@ export const useSensors = {
     )
 
     const post = (body: AirConditionerRequestBodyModel) => (
-      new Promise<void>((resolve, reject) => {
+      new Promise<ResponseModel>((resolve, reject) => {
         postApi(
           { endpoint: Endpoints.airConditionerPost, body },
           {
             resolve: () => {
-              resolve()
+              resolve({ status: 200, message: '' })
               setRefresh(!refresh)
             },
             reject,

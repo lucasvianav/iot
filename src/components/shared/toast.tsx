@@ -12,22 +12,22 @@ export function Toast(props: ToastProps) {
   // cronometer for elapsed time
   // since the tast was created
   useEffect(() => {
-    const timer = setInterval(() => setElapsed(elapsed + 1), 60000)
+    const timer = setInterval(() => setElapsed(elapsed + 10), 10000)
     return () => clearInterval(timer)
-  }, [])
+  })
 
   return (
     <BsToast
       show={props.toast.open}
       onClose={props.toast.close}
       bg='light'
-      delay={props.toast.delay || 150000}
+      delay={props.toast.delay || 45000}
       animation
       autohide
     >
       <BsToast.Header className='bg-danger text-white' closeVariant='white'>
         <strong className='me-auto'>{props.toast.title}</strong>
-        <small>{elapsed ? `Há ${elapsed} minutos` : 'Agora'}</small>
+        <small>{elapsed ? `Há ${elapsed} segundos` : 'Agora'}</small>
       </BsToast.Header>
       <BsToast.Body>{props.toast.body}</BsToast.Body>
     </BsToast>

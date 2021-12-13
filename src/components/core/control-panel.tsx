@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { SensorsContext, ToastsContext } from '../../contexts'
+import { ResponseModel } from '../../models'
 import { AirConditionerRequestBodyModel } from '../../models/sensors.models'
 import TemperatureControl from '../shared/temperature-control'
 import Toggler from '../shared/toggler'
@@ -89,11 +90,16 @@ export function ControlPanel() {
       air
         .post(body)
         .then(() => reset())
-        .catch(() => createToast({ title: 'Erro', body: 'Erro 123' }))
+        .catch((err: ResponseModel) => {
+          createToast({
+            title: `Erro ${err.status} - Controle do ar`,
+            body: err.message || 'Ocorreu um erro.',
+          })
+        })
     }
   }
 
-  useEffect(() => reset(false), [(air.error as boolean), air.loading])
+  useEffect(() => reset(false), [air.error as boolean, air.loading])
 
   return (
     <Form>
