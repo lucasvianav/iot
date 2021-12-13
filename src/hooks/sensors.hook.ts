@@ -192,6 +192,7 @@ export const useSensors = {
     const [movement, setMovement] = useState(false)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<ResponseModel|boolean>(false)
+    const [fetched, setFetched] = useState(new Date())
 
     useApi<boolean>(
       {
@@ -202,7 +203,12 @@ export const useSensors = {
         setValue: setMovement,
         setLoading,
         setError,
-        getData: r => r.data[0].TEMPO,
+        getData: r => {
+          const lastMovement = new Date(r.data[0].TEMPO.replace('Z', ''))
+          const detected = lastMovement > fetched
+          setFetched(new Date())
+          return detected
+        },
       }
     )
 
