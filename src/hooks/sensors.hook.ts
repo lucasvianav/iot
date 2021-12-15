@@ -144,7 +144,7 @@ export const useSensors = {
     const post = (body: AirConditionerRequestBodyModel) => (
       new Promise<ResponseModel>((resolve, reject) => {
         postApi(
-          { endpoint: Endpoints.airConditionerPost, body },
+          { endpoint: getRoute(Endpoints.airConditionerPost), body },
           {
             resolve: () => {
               resolve({ status: 200, message: '' })
