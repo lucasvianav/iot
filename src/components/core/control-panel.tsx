@@ -48,6 +48,7 @@ export function ControlPanel() {
   }
 
   const colClasses = 'd-flex justify-content-center'
+  const disabledConds = (air.error as boolean) || air.loading || globalLoading
 
   const reset = (force = true) => {
     if (!air.loading && (!edited || force)) {
@@ -118,7 +119,7 @@ export function ControlPanel() {
               labelFn={() => (on ? 'Ligado' : 'Desligado')}
               checkedFn={() => on}
               onChangeFn={() => set(setOn, !on)}
-              disabled={(air.error as boolean) || air.loading}
+              disabled={disabledConds}
             />
           </div>
 
@@ -128,7 +129,7 @@ export function ControlPanel() {
               labelFn={() => (onEmpty ? 'Ligado' : 'Desligado')}
               checkedFn={() => onEmpty}
               onChangeFn={() => set(setOnEmpty, !onEmpty)}
-              disabled={!on || (air.error as boolean) || air.loading}
+              disabled={!on || disabledConds}
             />
           </div>
         </div>
@@ -145,7 +146,7 @@ export function ControlPanel() {
               plusFn={() => {
                 set(setTemp, '', setTemperature, setInvalid, temperature + 1)
               }}
-              disabled={!on || (air.error as boolean) || air.loading}
+              disabled={!on || disabledConds}
             />
           </div>
 
@@ -172,7 +173,7 @@ export function ControlPanel() {
                   maxTemperature + 1
                 )
               }}
-              disabled={!on || (air.error as boolean) || air.loading}
+              disabled={!on || disabledConds}
             />
           </div>
 
@@ -199,20 +200,24 @@ export function ControlPanel() {
                   minTemperature + 1
                 )
               }}
-              disabled={!on || (air.error as boolean) || air.loading}
+              disabled={!on || disabledConds}
             />
           </div>
         </div>
 
         <div className='row d-flex justify-content-end gap-3'>
           <div className='px-3 mt-3 mx-auto'>
-            {!edited ? (
+            {!edited && !air.error ? (
               ''
             ) : (
               <div className='text-muted mt-3'>
                 <small>
-                  * Valores editados, para retornar aos originais, aperte o
-                  botão resetar. Eles são sincronizados a cada minuto.
+                  {air.error
+                    ? `* O formulário está desativado devido a algum erro com a
+                      conexão ao servidor. Uma nova tentativa é feita a cada
+                      minuto.`
+                    : `* Valores editados, para retornar aos originais, aperte o
+                      botão resetar. Eles são sincronizados a cada minuto.`}
                 </small>
               </div>
             )}
@@ -222,10 +227,16 @@ export function ControlPanel() {
             className='col-3'
             variant='outline-primary'
             onClick={() => reset()}
+            disabled={disabledConds}
           >
             Resetar
           </Button>
-          <Button className='col-3' variant='primary' onClick={save}>
+          <Button
+            className='col-3'
+            variant='primary'
+            onClick={save}
+            disabled={disabledConds}
+          >
             Salvar
           </Button>
         </div>
