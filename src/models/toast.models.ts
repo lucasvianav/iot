@@ -5,6 +5,8 @@ export interface ToastProps {
 export const enum ToastType {
   Error = 'danger',
   Success = 'success',
+  Warning = 'warning',
+  Info = 'info',
 }
 
 export interface ToastModel {

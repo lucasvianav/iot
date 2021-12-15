@@ -45,33 +45,26 @@ export function ControlPanel() {
   }
 
   const save = () => {
-    const body: AirConditionerRequestBodyModel = {}
+    const body: AirConditionerRequestBodyModel = {
+      temperature,
+      maxTemperature,
+      minTemperature,
+      on,
+      onEmpty,
+      commandTimeout,
+    }
     let flag = false
 
-    if (temperature !== air.temperature) {
-      body.temperature = temperature
-      flag = true
-    }
+    Object.keys(body).forEach((key: string) => {
+      const airValue = (air as any)[key]
+      const bodyValue = (body as any)[key]
 
-    if (maxTemperature !== air.maxTemperature) {
-      body.maxTemperature = maxTemperature
-      flag = true
-    }
-
-    if (minTemperature !== air.minTemperature) {
-      body.minTemperature = minTemperature
-      flag = true
-    }
-
-    if (on !== air.on) {
-      body.on = on
-      flag = true
-    }
-
-    if (onEmpty !== air.onEmpty) {
-      body.onEmpty = onEmpty
-      flag = true
-    }
+      if (airValue === bodyValue) {
+        delete (body as any)[key]
+      } else {
+        flag = true
+      }
+    })
 
     if (flag) {
       setGlobalLoading(true)
@@ -95,6 +88,13 @@ export function ControlPanel() {
           })
         })
         .finally(() => setGlobalLoading(false))
+    } else {
+      createToast({
+        title: 'Controle do ar - Atualização',
+        body: `Nenhum dado foi alterado, portanto não tem o que salvar.`,
+        type: ToastType.Warning,
+      })
+      reset()
     }
   }
 
