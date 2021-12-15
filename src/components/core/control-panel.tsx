@@ -74,7 +74,7 @@ export function ControlPanel() {
         .then(() => {
           reset()
           createToast({
-            title: 'Controle do ar - Atualização',
+            title: 'Controle do ar - Escrita',
             body: `A atualização do controle do ar-condicionado foi feita com
                    sucesso. Os dados serão sincronizados em poucos instantes.`,
             type: ToastType.Success,
@@ -82,15 +82,17 @@ export function ControlPanel() {
         })
         .catch((err: ResponseModel) => {
           createToast({
-            title: `Controle do ar - Erro ${err.status}`,
-            body: err.message || 'Ocorreu um erro.',
+            title: `Controle do ar - Escrita`,
+            body: `Erro ${err.status}. ${err.message}${
+              err.message.endsWith('.') ? '' : '.'
+            }`,
             type: ToastType.Error,
           })
         })
         .finally(() => setGlobalLoading(false))
     } else {
       createToast({
-        title: 'Controle do ar - Atualização',
+        title: 'Controle do ar - Escrita',
         body: `Nenhum dado foi alterado, portanto não tem o que salvar.`,
         type: ToastType.Warning,
       })

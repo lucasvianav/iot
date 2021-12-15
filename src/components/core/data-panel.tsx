@@ -26,8 +26,10 @@ export function DataPanel() {
       if (sensor.error) {
         const err = sensor.error as ResponseModel
         createToast({
-          title: `Erro ${err.status} - ${sensor.name}`,
-          body: err.message,
+          title: `${sensor.name} - Leitura`,
+          body: `Erro ${err.status}. ${err.message}${
+            err.message.endsWith('.') ? '' : '.'
+          }`,
           type: ToastType.Error,
           delay: 7000,
         })
