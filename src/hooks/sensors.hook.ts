@@ -11,6 +11,13 @@ const params = {
   },
 }
 
+const parseError = (err: any) => {
+  const status = err?.response?.status || '???'
+  const message = err?.response?.data?.detail || 'Erro desconhecido.'
+
+  return { status, message }
+}
+
 const useApi =
   <T>(
     args: { endpoint: string; opts?: any },
@@ -34,10 +41,7 @@ const useApi =
       axios
         .get(args.endpoint, args.opts || {})
         .then(r => fn.setValue(fn.getData(r)))
-        .catch(err => {
-          const {status, data: { detail: message }} = err.response
-          fn.setError({ status, message })
-        })
+        .catch(err => fn.setError(parseError(err)))
         .finally(() => fn.setLoading(false))
     }
 
@@ -64,10 +68,7 @@ const postApi =
     axios
       .post(args.endpoint, args.body || {}, args.opts || {})
       .then(fn.resolve)
-      .catch(err => {
-        const {status, data: { detail: message }} = err.response
-        fn.reject({ status, message })
-      })
+      .catch(err => fn.reject(parseError(err)))
       .finally(() => {
         if (fn.callback) {
           fn.callback()
