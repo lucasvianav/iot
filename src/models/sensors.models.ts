@@ -9,7 +9,6 @@ export interface AirConditionerHookModel {
   on: boolean
   onEmpty: boolean
   commandTimeout: number
-  isTemperatureValid: (type: string, value: number) => boolean
   post: (body: AirConditionerRequestBodyModel) => Promise<ResponseModel>
   name: string
 }

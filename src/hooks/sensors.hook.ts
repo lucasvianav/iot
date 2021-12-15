@@ -119,20 +119,6 @@ export const useSensors = {
       setCommandTimeout(r.T_CMD)
     }
 
-    const isTemperatureValid = (type: string, value: number): boolean => {
-      let isValid
-
-      if (type === 'max') {
-        isValid = value >= 17 && value <= 23
-      } else if (type === 'min') {
-        isValid = value >= 16 && value <= 22
-      } else {
-        isValid = value >= 16 && value <= 23
-      }
-
-      return isValid
-    }
-
     useApi<number>(
       { endpoint: getRoute(Endpoints.airConditionerGet) },
       {
@@ -168,7 +154,6 @@ export const useSensors = {
       on,
       onEmpty,
       commandTimeout,
-      isTemperatureValid,
       post,
       name: 'Ar-condicionado',
     }

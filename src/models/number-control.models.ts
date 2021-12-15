@@ -7,17 +7,23 @@ export interface NumberControlProps {
   /** the conntroller's title */
   title?: string
 
-  /** function to be called when the - button is clicked */
-  minusFn: () => void
+  /** function to change the value when +/- are called */
+  setterFn: (newValue: number) => void
 
-  /** function to be called when the + button is clicked */
-  plusFn: () => void
+  /** function to validate if newValue (has priority over max/min) */
+  validateFn?: (newValue: number) => boolean
+
+  /** maximum value allowed */
+  max?: number
+
+  /** minimum value allowed */
+  min?: number
 
   /** function to be called to evaluate the temperature value */
-  valueFn: () => number|string
+  value: number|string
 
-  /** function to be called to evaluate if the current value is invalid */
-  invalidFn: () => boolean
+  /** step with which to change the value when pressing +/- (default 1) */
+  step?: number
 
   /** is the controller disabled? */
   disabled: boolean

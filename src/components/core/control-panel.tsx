@@ -17,35 +17,16 @@ export function ControlPanel() {
   const [temperature, setTemperature] = useState(air.temperature)
   const [maxTemperature, setMaxTemperature] = useState(air.maxTemperature)
   const [minTemperature, setMinTemperature] = useState(air.minTemperature)
-
   const [edited, setEdited] = useState(false)
-  const [invalid, setInvalid] = useState(false)
-  const [invalidMax, setInvalidMax] = useState(false)
-  const [invalidMin, setInvalidMin] = useState(false)
-
   const [globalLoading, setGlobalLoading] = useState(false)
 
-  const set = (setter: (...args: any[]) => any, ...args: any[]) => {
-    setter(...args)
-    setEdited(true)
-  }
-
-  let invalidTimeout: NodeJS.Timeout
-  const setTemp = (
-    type: string,
-    setValue: (value: number) => any,
-    setInvalid: (invalid: boolean) => any,
-    value: number
-  ) => {
-    const isValid = air.isTemperatureValid(type, value)
-    setInvalid(!isValid)
-
-    if (isValid) {
-      setValue(value)
-      clearTimeout(invalidTimeout)
-    } else {
-      invalidTimeout = setTimeout(() => setInvalid(false), 1000)
+  const set = (setter: (...args: any[]) => any) => {
+    const set = (...args: any[]) => {
+      setter(...args)
+      setEdited(true)
     }
+
+    return set
   }
 
   const colClasses = 'd-flex justify-content-center'
@@ -100,9 +81,9 @@ export function ControlPanel() {
         .then(() => {
           reset()
           createToast({
-            title: 'Controle do ar - Atualizado com sucesso',
+            title: 'Controle do ar - Atualização',
             body: `A atualização do controle do ar-condicionado foi feita com
-                   sucesso. Os dados serão atualizados em poucos instantes.`,
+                   sucesso. Os dados serão sincronizados em poucos instantes.`,
             type: ToastType.Success,
           })
         })
@@ -129,7 +110,7 @@ export function ControlPanel() {
               title='Status'
               labelFn={() => (on ? 'Ligado' : 'Desligado')}
               checkedFn={() => on}
-              onChangeFn={() => set(setOn, !on)}
+              onChangeFn={() => set(setOn)(!on)}
               disabled={disabledConds}
             />
           </div>
@@ -139,7 +120,7 @@ export function ControlPanel() {
               title='Status (Sala Vazia)'
               labelFn={() => (onEmpty ? 'Ligado' : 'Desligado')}
               checkedFn={() => onEmpty}
-              onChangeFn={() => set(setOnEmpty, !onEmpty)}
+              onChangeFn={() => set(setOnEmpty)(!onEmpty)}
               disabled={!on || disabledConds}
             />
           </div>
@@ -149,14 +130,10 @@ export function ControlPanel() {
           <div className={`${colClasses} col-6 col-md-3`}>
             <NumberControl
               title='Temperatura'
-              minusFn={() => {
-                set(setTemp, '', setTemperature, setInvalid, temperature - 1)
-              }}
-              invalidFn={() => invalid}
-              valueFn={() => (on ? temperature : 'OFF')}
-              plusFn={() => {
-                set(setTemp, '', setTemperature, setInvalid, temperature + 1)
-              }}
+              value={on ? temperature : 'OFF'}
+              setterFn={set(setTemperature)}
+              max={23}
+              min={16}
               disabled={!on || disabledConds}
               unit={NumberUnit.Celsius}
             />
@@ -165,26 +142,10 @@ export function ControlPanel() {
           <div className={`${colClasses} col-6 col-md-3`}>
             <NumberControl
               title='Temp. Máxima (sala)'
-              minusFn={() => {
-                set(
-                  setTemp,
-                  'max',
-                  setMaxTemperature,
-                  setInvalidMax,
-                  maxTemperature - 1
-                )
-              }}
-              invalidFn={() => invalidMax}
-              valueFn={() => (on ? maxTemperature : 'OFF')}
-              plusFn={() => {
-                set(
-                  setTemp,
-                  'max',
-                  setMaxTemperature,
-                  setInvalidMax,
-                  maxTemperature + 1
-                )
-              }}
+              setterFn={set(setMaxTemperature)}
+              max={23}
+              min={17}
+              value={on ? maxTemperature : 'OFF'}
               disabled={!on || disabledConds}
               unit={NumberUnit.Celsius}
             />
@@ -193,26 +154,10 @@ export function ControlPanel() {
           <div className={`${colClasses} col-6 col-md-3`}>
             <NumberControl
               title='Temp. Mínima (sala)'
-              minusFn={() => {
-                set(
-                  setTemp,
-                  'min',
-                  setMinTemperature,
-                  setInvalidMin,
-                  minTemperature - 1
-                )
-              }}
-              invalidFn={() => invalidMin}
-              valueFn={() => (on ? minTemperature : 'OFF')}
-              plusFn={() => {
-                set(
-                  setTemp,
-                  'min',
-                  setMinTemperature,
-                  setInvalidMin,
-                  minTemperature + 1
-                )
-              }}
+              setterFn={set(setMinTemperature)}
+              max={22}
+              min={16}
+              value={on ? minTemperature : 'OFF'}
               disabled={!on || disabledConds}
               unit={NumberUnit.Celsius}
             />
@@ -221,10 +166,10 @@ export function ControlPanel() {
           <div className={`${colClasses} col-6 col-md-3`}>
             <NumberControl
               title='Timeout entre comandos'
-              minusFn={() => set(setCommandTimeout, commandTimeout - 1)}
-              invalidFn={() => invalidMin}
-              valueFn={() => commandTimeout}
-              plusFn={() => set(setCommandTimeout, commandTimeout + 1)}
+              setterFn={set(setCommandTimeout)}
+              max={10}
+              min={1}
+              value={commandTimeout}
               disabled={disabledConds}
               unit={NumberUnit.Minutes}
             />
