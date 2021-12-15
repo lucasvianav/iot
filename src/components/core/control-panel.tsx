@@ -3,6 +3,7 @@ import { Button, Form } from 'react-bootstrap'
 import { SensorsContext, ToastsContext } from '../../contexts'
 import { ResponseModel } from '../../models'
 import { AirConditionerRequestBodyModel } from '../../models/sensors.models'
+import { GlobalLoading } from '../shared'
 import TemperatureControl from '../shared/temperature-control'
 import Toggler from '../shared/toggler'
 
@@ -20,6 +21,8 @@ export function ControlPanel() {
   const [invalid, setInvalid] = useState(false)
   const [invalidMax, setInvalidMax] = useState(false)
   const [invalidMin, setInvalidMin] = useState(false)
+
+  const [globalLoading, setGlobalLoading] = useState(false)
 
   const set = (setter: (...args: any[]) => any, ...args: any[]) => {
     setter(...args)
@@ -87,6 +90,8 @@ export function ControlPanel() {
     }
 
     if (flag) {
+      setGlobalLoading(true)
+
       air
         .post(body)
         .then(() => reset())
@@ -96,132 +101,136 @@ export function ControlPanel() {
             body: err.message || 'Ocorreu um erro.',
           })
         })
+        .finally(() => setGlobalLoading(false))
     }
   }
 
   useEffect(() => reset(false), [air.error as boolean, air.loading])
 
   return (
-    <Form>
-      <div className='row mb-3' style={{ rowGap: '20px' }}>
-        <div className={`${colClasses} col-6`}>
-          <Toggler
-            title='Status'
-            labelFn={() => (on ? 'Ligado' : 'Desligado')}
-            checkedFn={() => on}
-            onChangeFn={() => set(setOn, !on)}
-            disabled={(air.error as boolean) || air.loading}
-          />
+    <>
+      <GlobalLoading loading={globalLoading} />
+      <Form>
+        <div className='row mb-3' style={{ rowGap: '20px' }}>
+          <div className={`${colClasses} col-6`}>
+            <Toggler
+              title='Status'
+              labelFn={() => (on ? 'Ligado' : 'Desligado')}
+              checkedFn={() => on}
+              onChangeFn={() => set(setOn, !on)}
+              disabled={(air.error as boolean) || air.loading}
+            />
+          </div>
+
+          <div className={`${colClasses} col-6`}>
+            <Toggler
+              title='Status (Sala Vazia)'
+              labelFn={() => (onEmpty ? 'Ligado' : 'Desligado')}
+              checkedFn={() => onEmpty}
+              onChangeFn={() => set(setOnEmpty, !onEmpty)}
+              disabled={!on || (air.error as boolean) || air.loading}
+            />
+          </div>
         </div>
 
-        <div className={`${colClasses} col-6`}>
-          <Toggler
-            title='Status (Sala Vazia)'
-            labelFn={() => (onEmpty ? 'Ligado' : 'Desligado')}
-            checkedFn={() => onEmpty}
-            onChangeFn={() => set(setOnEmpty, !onEmpty)}
-            disabled={!on || (air.error as boolean) || air.loading}
-          />
-        </div>
-      </div>
+        <div className='row mt-3' style={{ rowGap: '20px' }}>
+          <div className={`${colClasses} col-6 col-md-4`}>
+            <TemperatureControl
+              title='Temperatura'
+              minusFn={() => {
+                set(setTemp, '', setTemperature, setInvalid, temperature - 1)
+              }}
+              invalidFn={() => invalid}
+              valueFn={() => (on ? temperature : 'OFF')}
+              plusFn={() => {
+                set(setTemp, '', setTemperature, setInvalid, temperature + 1)
+              }}
+              disabled={!on || (air.error as boolean) || air.loading}
+            />
+          </div>
 
-      <div className='row mt-3' style={{ rowGap: '20px' }}>
-        <div className={`${colClasses} col-6 col-md-4`}>
-          <TemperatureControl
-            title='Temperatura'
-            minusFn={() => {
-              set(setTemp, '', setTemperature, setInvalid, temperature - 1)
-            }}
-            invalidFn={() => invalid}
-            valueFn={() => (on ? temperature : 'OFF')}
-            plusFn={() => {
-              set(setTemp, '', setTemperature, setInvalid, temperature + 1)
-            }}
-            disabled={!on || (air.error as boolean) || air.loading}
-          />
+          <div className={`${colClasses} col-6 col-md-4`}>
+            <TemperatureControl
+              title='Temp. Máxima (sala)'
+              minusFn={() => {
+                set(
+                  setTemp,
+                  'max',
+                  setMaxTemperature,
+                  setInvalidMax,
+                  maxTemperature - 1
+                )
+              }}
+              invalidFn={() => invalidMax}
+              valueFn={() => (on ? maxTemperature : 'OFF')}
+              plusFn={() => {
+                set(
+                  setTemp,
+                  'max',
+                  setMaxTemperature,
+                  setInvalidMax,
+                  maxTemperature + 1
+                )
+              }}
+              disabled={!on || (air.error as boolean) || air.loading}
+            />
+          </div>
+
+          <div className={`${colClasses} col-6 col-md-4`}>
+            <TemperatureControl
+              title='Temp. Mínima (sala)'
+              minusFn={() => {
+                set(
+                  setTemp,
+                  'min',
+                  setMinTemperature,
+                  setInvalidMin,
+                  minTemperature - 1
+                )
+              }}
+              invalidFn={() => invalidMin}
+              valueFn={() => (on ? minTemperature : 'OFF')}
+              plusFn={() => {
+                set(
+                  setTemp,
+                  'min',
+                  setMinTemperature,
+                  setInvalidMin,
+                  minTemperature + 1
+                )
+              }}
+              disabled={!on || (air.error as boolean) || air.loading}
+            />
+          </div>
         </div>
 
-        <div className={`${colClasses} col-6 col-md-4`}>
-          <TemperatureControl
-            title='Temp. Máxima (sala)'
-            minusFn={() => {
-              set(
-                setTemp,
-                'max',
-                setMaxTemperature,
-                setInvalidMax,
-                maxTemperature - 1
-              )
-            }}
-            invalidFn={() => invalidMax}
-            valueFn={() => (on ? maxTemperature : 'OFF')}
-            plusFn={() => {
-              set(
-                setTemp,
-                'max',
-                setMaxTemperature,
-                setInvalidMax,
-                maxTemperature + 1
-              )
-            }}
-            disabled={!on || (air.error as boolean) || air.loading}
-          />
+        <div className='row d-flex justify-content-end gap-3'>
+          <div className='px-3 mt-3 mx-auto'>
+            {!edited ? (
+              ''
+            ) : (
+              <div className='text-muted mt-3'>
+                <small>
+                  * Valores editados, para retornar aos originais, aperte o
+                  botão resetar. Eles são sincronizados a cada minuto.
+                </small>
+              </div>
+            )}
+            <hr />
+          </div>
+          <Button
+            className='col-3'
+            variant='outline-primary'
+            onClick={() => reset()}
+          >
+            Resetar
+          </Button>
+          <Button className='col-3' variant='primary' onClick={save}>
+            Salvar
+          </Button>
         </div>
-
-        <div className={`${colClasses} col-6 col-md-4`}>
-          <TemperatureControl
-            title='Temp. Mínima (sala)'
-            minusFn={() => {
-              set(
-                setTemp,
-                'min',
-                setMinTemperature,
-                setInvalidMin,
-                minTemperature - 1
-              )
-            }}
-            invalidFn={() => invalidMin}
-            valueFn={() => (on ? minTemperature : 'OFF')}
-            plusFn={() => {
-              set(
-                setTemp,
-                'min',
-                setMinTemperature,
-                setInvalidMin,
-                minTemperature + 1
-              )
-            }}
-            disabled={!on || (air.error as boolean) || air.loading}
-          />
-        </div>
-      </div>
-
-      <div className='row d-flex justify-content-end gap-3'>
-        <div className='px-3 mt-3 mx-auto'>
-          {!edited ? (
-            ''
-          ) : (
-            <div className='text-muted mt-3'>
-              <small>
-                * Valores editados, para retornar aos originais, aperte o botão
-                resetar. Eles são sincronizados a cada minuto.
-              </small>
-            </div>
-          )}
-          <hr />
-        </div>
-        <Button
-          className='col-3'
-          variant='outline-primary'
-          onClick={() => reset()}
-        >
-          Resetar
-        </Button>
-        <Button className='col-3' variant='primary' onClick={save}>
-          Salvar
-        </Button>
-      </div>
-    </Form>
+      </Form>
+    </>
   )
 }
 
