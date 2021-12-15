@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { SensorsContext, ToastsContext } from '../../contexts'
-import { ResponseModel } from '../../models'
+import { NumberUnit, ResponseModel, ToastType } from '../../models'
 import { AirConditionerRequestBodyModel } from '../../models/sensors.models'
 import { GlobalLoading } from '../shared'
-import TemperatureControl from '../shared/temperature-control'
+import NumberControl from '../shared/number-control'
 import Toggler from '../shared/toggler'
 
 export function ControlPanel() {
@@ -13,6 +13,7 @@ export function ControlPanel() {
 
   const [on, setOn] = useState(air.on)
   const [onEmpty, setOnEmpty] = useState(air.onEmpty)
+  const [commandTimeout, setCommandTimeout] = useState(air.commandTimeout)
   const [temperature, setTemperature] = useState(air.temperature)
   const [maxTemperature, setMaxTemperature] = useState(air.maxTemperature)
   const [minTemperature, setMinTemperature] = useState(air.minTemperature)
@@ -57,6 +58,7 @@ export function ControlPanel() {
       setTemperature(air.temperature)
       setMaxTemperature(air.maxTemperature)
       setMinTemperature(air.minTemperature)
+      setCommandTimeout(air.commandTimeout)
       setEdited(false)
     }
   }
@@ -95,11 +97,20 @@ export function ControlPanel() {
 
       air
         .post(body)
-        .then(() => reset())
+        .then(() => {
+          reset()
+          createToast({
+            title: 'Controle do ar - Atualizado com sucesso',
+            body: `A atualização do controle do ar-condicionado foi feita com
+                   sucesso. Os dados serão atualizados em poucos instantes.`,
+            type: ToastType.Success,
+          })
+        })
         .catch((err: ResponseModel) => {
           createToast({
-            title: `Erro ${err.status} - Controle do ar`,
+            title: `Controle do ar - Erro ${err.status}`,
             body: err.message || 'Ocorreu um erro.',
+            type: ToastType.Error,
           })
         })
         .finally(() => setGlobalLoading(false))
@@ -135,8 +146,8 @@ export function ControlPanel() {
         </div>
 
         <div className='row mt-3' style={{ rowGap: '20px' }}>
-          <div className={`${colClasses} col-6 col-md-4`}>
-            <TemperatureControl
+          <div className={`${colClasses} col-6 col-md-3`}>
+            <NumberControl
               title='Temperatura'
               minusFn={() => {
                 set(setTemp, '', setTemperature, setInvalid, temperature - 1)
@@ -147,11 +158,12 @@ export function ControlPanel() {
                 set(setTemp, '', setTemperature, setInvalid, temperature + 1)
               }}
               disabled={!on || disabledConds}
+              unit={NumberUnit.Celsius}
             />
           </div>
 
-          <div className={`${colClasses} col-6 col-md-4`}>
-            <TemperatureControl
+          <div className={`${colClasses} col-6 col-md-3`}>
+            <NumberControl
               title='Temp. Máxima (sala)'
               minusFn={() => {
                 set(
@@ -174,11 +186,12 @@ export function ControlPanel() {
                 )
               }}
               disabled={!on || disabledConds}
+              unit={NumberUnit.Celsius}
             />
           </div>
 
-          <div className={`${colClasses} col-6 col-md-4`}>
-            <TemperatureControl
+          <div className={`${colClasses} col-6 col-md-3`}>
+            <NumberControl
               title='Temp. Mínima (sala)'
               minusFn={() => {
                 set(
@@ -201,12 +214,25 @@ export function ControlPanel() {
                 )
               }}
               disabled={!on || disabledConds}
+              unit={NumberUnit.Celsius}
+            />
+          </div>
+
+          <div className={`${colClasses} col-6 col-md-3`}>
+            <NumberControl
+              title='Timeout entre comandos'
+              minusFn={() => set(setCommandTimeout, commandTimeout - 1)}
+              invalidFn={() => invalidMin}
+              valueFn={() => commandTimeout}
+              plusFn={() => set(setCommandTimeout, commandTimeout + 1)}
+              disabled={disabledConds}
+              unit={NumberUnit.Minutes}
             />
           </div>
         </div>
 
-        <div className='row d-flex justify-content-end gap-3'>
-          <div className='px-3 mt-3 mx-auto'>
+        <div className='row d-flex justify-content-end gap-3 px-4'>
+          <div className='mt-3 mx-auto'>
             {!edited && !air.error ? (
               ''
             ) : (
@@ -223,6 +249,7 @@ export function ControlPanel() {
             )}
             <hr />
           </div>
+
           <Button
             className='col-3'
             variant='outline-primary'
@@ -231,6 +258,7 @@ export function ControlPanel() {
           >
             Resetar
           </Button>
+
           <Button
             className='col-3'
             variant='primary'

@@ -104,6 +104,7 @@ export const useSensors = {
     const [temperature, setTemperature] = useState(-1)
     const [maxTemperature, setMaxTemperature] = useState(-1)
     const [minTemperature, setMinTemperature] = useState(-1)
+    const [commandTimeout, setCommandTimeout] = useState(-1)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<ResponseModel|boolean>(false)
 
@@ -115,6 +116,7 @@ export const useSensors = {
       setTemperature(r.TEMPERATURA)
       setMaxTemperature(r.T_MAX)
       setMinTemperature(r.T_MIN)
+      setCommandTimeout(r.T_CMD)
     }
 
     const isTemperatureValid = (type: string, value: number): boolean => {
@@ -165,6 +167,7 @@ export const useSensors = {
       error,
       on,
       onEmpty,
+      commandTimeout,
       isTemperatureValid,
       post,
       name: 'Ar-condicionado',

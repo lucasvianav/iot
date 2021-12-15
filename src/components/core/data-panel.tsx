@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { SensorsContext, ToastsContext } from '../../contexts'
-import { ResponseModel } from '../../models'
+import { ResponseModel, ToastType } from '../../models'
 import { DataCard } from '../shared'
 
 export function DataPanel() {
@@ -28,6 +28,7 @@ export function DataPanel() {
         createToast({
           title: `Erro ${err.status} - ${sensor.name}`,
           body: err.message,
+          type: ToastType.Error,
           delay: 7000,
         })
       }

@@ -1,8 +1,8 @@
 import React from 'react'
 import { Button, Form, InputGroup } from 'react-bootstrap'
-import { TemperatureControlProps } from '../../models/temperature-control.models'
+import { NumberControlProps } from '../../models/number-control.models'
 
-export function TemperatureControl(props: TemperatureControlProps) {
+export function NumberControl(props: NumberControlProps) {
   return (
     <div>
       <small>{props.title}</small>
@@ -19,7 +19,12 @@ export function TemperatureControl(props: TemperatureControlProps) {
         <div style={{ width: '75px' }}>
           <Form.Control
             className='text-center'
-            value={props.valueFn()}
+            value={
+              props.valueFn() +
+              (props.unit && typeof props.valueFn() === 'number'
+                ? ` ${props.unit}`
+                : '')
+            }
             isInvalid={props.invalidFn()}
             disabled={props.disabled}
             readOnly
@@ -39,4 +44,4 @@ export function TemperatureControl(props: TemperatureControlProps) {
   )
 }
 
-export default TemperatureControl
+export default NumberControl

@@ -1,4 +1,9 @@
-export interface TemperatureControlProps {
+export const enum NumberUnit {
+  Celsius = 'ºC',
+  Minutes = 'min',
+}
+
+export interface NumberControlProps {
   /** the conntroller's title */
   title?: string
 
@@ -16,4 +21,7 @@ export interface TemperatureControlProps {
 
   /** is the controller disabled? */
   disabled: boolean
+
+  /** unit to be shown besides the number value */
+  unit: NumberUnit
 }

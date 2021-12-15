@@ -25,7 +25,10 @@ export function Toast(props: ToastProps) {
       animation
       autohide
     >
-      <BsToast.Header className='bg-danger text-white' closeVariant='white'>
+      <BsToast.Header
+        className={`bg-${props.toast.type} text-white`}
+        closeVariant='white'
+      >
         <strong className='me-auto'>{props.toast.title}</strong>
         <small>{elapsed ? `Há ${elapsed} segundos` : 'Agora'}</small>
       </BsToast.Header>
