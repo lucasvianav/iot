@@ -7,10 +7,7 @@ export const useToasts = () => {
   // delete all closed toasts every 3 minutes
   useEffect(() => {
     const timer = setInterval(() => {
-      setToasts(toasts.filter(toast => {
-        console.log(toast)
-        return toast.open
-      }))
+      setToasts(toasts.filter(toast => toast.open))
     }, 120000)
     return () => clearInterval(timer)
   }, [])

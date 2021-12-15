@@ -1,27 +1,13 @@
-import React, { useContext } from 'react'
-import { Accordion, ToastContainer } from 'react-bootstrap'
+import React from 'react'
+import { Accordion } from 'react-bootstrap'
 import './app.scss'
 import { ControlPanel, DataPanel, Footer, Header } from './components/core'
-import { Toast } from './components/shared'
-import { ToastsContext } from './contexts'
+import { ToastContainer } from './components/shared'
 
 function App() {
-  const { toasts } = useContext(ToastsContext)
-
   return (
     <>
-      <ToastContainer
-        position='top-end'
-        className='p-3'
-        style={{
-          position: 'absolute',
-          zIndex: 9999,
-        }}
-      >
-        {toasts.map((toast, i) => (
-          <Toast toast={toast} key={i} />
-        ))}
-      </ToastContainer>
+      <ToastContainer />
 
       <div
         className='text-white d-flex flex-column'
