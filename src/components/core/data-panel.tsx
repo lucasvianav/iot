@@ -1,15 +1,51 @@
-import React, { useContext } from 'react'
-import { SensorsContext } from '../../hooks'
+import React, { useContext, useEffect } from 'react'
+import { SensorsContext, ToastsContext } from '../../contexts'
+import { ResponseModel, ToastType } from '../../models'
 import { DataCard } from '../shared'
 
 export function DataPanel() {
+  const { createToast } = useContext(ToastsContext)
+
   const {
     air,
-    humidity,
+    humidity20,
+    humidity21,
+    humidity22,
     luminosity,
     movement,
-    temperature,
+    temperature20,
+    temperature21,
+    temperature22,
   } = useContext(SensorsContext)
+
+  const handleToasts = (sensor: {
+    error: ResponseModel | boolean
+    name: string
+  }) => {
+    useEffect(() => {
+      if (sensor.error) {
+        const err = sensor.error as ResponseModel
+        createToast({
+          title: `${sensor.name} - Leitura`,
+          body: `Erro ${err.status}. ${err.message}${
+            err.message.endsWith('.') ? '' : '.'
+          }`,
+          type: ToastType.Error,
+          delay: 7000,
+        })
+      }
+    }, [sensor.error])
+  }
+
+  handleToasts(air)
+  handleToasts(humidity20)
+  handleToasts(temperature20)
+  handleToasts(luminosity)
+  handleToasts(movement)
+  handleToasts(humidity21)
+  handleToasts(temperature21)
+  handleToasts(humidity22)
+  handleToasts(temperature22)
 
   return (
     <div className='d-flex flex-column gap-3'>
@@ -20,7 +56,7 @@ export function DataPanel() {
             description='Ar-condicionado 23'
             data={air.on ? `${air.temperature}ºC` : 'Desligado'}
             loading={air.loading}
-            error={air.error}
+            error={air.error as boolean}
             icon='snowflake'
           />
         </div>
@@ -28,10 +64,34 @@ export function DataPanel() {
         <div className='col-md-6'>
           <DataCard
             title='Sensação Térmica'
-            description='Sala 2'
-            data={`${temperature.temperature}ºC`}
-            loading={temperature.loading}
-            error={temperature.error}
+            description='Sala 2 - Sensor 20'
+            data={`${temperature20.temperature}ºC`}
+            loading={temperature20.loading}
+            error={temperature20.error as boolean}
+            icon='thermometer-quarter'
+          />
+        </div>
+      </div>
+
+      <div className='row gap-3 gap-md-0'>
+        <div className='col-md-6'>
+          <DataCard
+            title='Sensação Térmica'
+            description='Sala 2 - Sensor 21'
+            data={`${temperature21.temperature}ºC`}
+            loading={temperature21.loading}
+            error={temperature21.error as boolean}
+            icon='thermometer-quarter'
+          />
+        </div>
+
+        <div className='col-md-6'>
+          <DataCard
+            title='Sensação Térmica'
+            description='Sala 2 - Sensor 22'
+            data={`${temperature22.temperature}ºC`}
+            loading={temperature22.loading}
+            error={temperature22.error as boolean}
             icon='thermometer-quarter'
           />
         </div>
@@ -41,10 +101,34 @@ export function DataPanel() {
         <div className='col-md-6'>
           <DataCard
             title='Umidade do ar'
-            description='Sala 2'
-            data={`${humidity.humidity}%`}
-            loading={humidity.loading}
-            error={humidity.error}
+            description='Sala 2 - Sensor 20'
+            data={`${humidity20.humidity}%`}
+            loading={humidity20.loading}
+            error={humidity20.error as boolean}
+            icon='wind'
+          />
+        </div>
+
+        <div className='col-md-6'>
+          <DataCard
+            title='Umidade do ar'
+            description='Sala 2 - Sensor 21'
+            data={`${humidity21.humidity}%`}
+            loading={humidity21.loading}
+            error={humidity21.error as boolean}
+            icon='wind'
+          />
+        </div>
+      </div>
+
+      <div className='row gap-3 gap-md-0'>
+        <div className='col-md-6'>
+          <DataCard
+            title='Umidade do ar'
+            description='Sala 2 - Sensor 22'
+            data={`${humidity22.humidity}%`}
+            loading={humidity22.loading}
+            error={humidity22.error as boolean}
             icon='wind'
           />
         </div>
@@ -55,7 +139,7 @@ export function DataPanel() {
             description='Sala 2'
             data={movement.movement ? 'Detectado' : 'Sala vazia'}
             loading={movement.loading}
-            error={movement.error}
+            error={movement.error as boolean}
             icon='running'
           />
         </div>
@@ -66,10 +150,10 @@ export function DataPanel() {
           <DataCard
             title='Luminosidade'
             description='Sala 2'
-            data={`${luminosity.luminosity} lx`}
+            data={`Lâmpada ${luminosity.luminosity ? 'acesa' : 'apagada'}`}
             loading={luminosity.loading}
-            error={luminosity.error}
-            icon={luminosity.luminosity > 50 ? 'sun' : 'moon'}
+            error={luminosity.error as boolean}
+            icon={luminosity.luminosity ? 'sun' : 'moon'}
           />
         </div>
       </div>

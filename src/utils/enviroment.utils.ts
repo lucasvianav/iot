@@ -1,4 +1,4 @@
 export const enviroment = {
-  key: process.env.REACT_APP_OPENWEATHER_KEY || '',
-  backURL: process.env.REACT_APP_OPENWEATHER_URL || '',
+  backURL: `http://localhost:${process.env.REACT_APP_BACKEND_PORT}/` || '',
+  locale: 'pt-br',
 }
