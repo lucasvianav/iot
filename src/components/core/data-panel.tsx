@@ -67,7 +67,7 @@ export function DataPanel() {
             description='Sala 2 - Sensor 20'
             data={`${temperature20.temperature}ºC`}
             loading={temperature20.loading}
-            error={temperature20.error}
+            error={temperature20.error as boolean}
             icon='thermometer-quarter'
           />
         </div>
@@ -80,7 +80,7 @@ export function DataPanel() {
             description='Sala 2 - Sensor 21'
             data={`${temperature21.temperature}ºC`}
             loading={temperature21.loading}
-            error={temperature21.error}
+            error={temperature21.error as boolean}
             icon='thermometer-quarter'
           />
         </div>
@@ -91,7 +91,7 @@ export function DataPanel() {
             description='Sala 2 - Sensor 22'
             data={`${temperature22.temperature}ºC`}
             loading={temperature22.loading}
-            error={temperature22.error}
+            error={temperature22.error as boolean}
             icon='thermometer-quarter'
           />
         </div>
@@ -104,7 +104,7 @@ export function DataPanel() {
             description='Sala 2 - Sensor 20'
             data={`${humidity20.humidity}%`}
             loading={humidity20.loading}
-            error={humidity20.error}
+            error={humidity20.error as boolean}
             icon='wind'
           />
         </div>
@@ -115,7 +115,7 @@ export function DataPanel() {
             description='Sala 2 - Sensor 21'
             data={`${humidity21.humidity}%`}
             loading={humidity21.loading}
-            error={humidity21.error}
+            error={humidity21.error as boolean}
             icon='wind'
           />
         </div>
@@ -128,7 +128,7 @@ export function DataPanel() {
             description='Sala 2 - Sensor 22'
             data={`${humidity22.humidity}%`}
             loading={humidity22.loading}
-            error={humidity22.error}
+            error={humidity22.error as boolean}
             icon='wind'
           />
         </div>
@@ -139,7 +139,7 @@ export function DataPanel() {
             description='Sala 2'
             data={movement.movement ? 'Detectado' : 'Sala vazia'}
             loading={movement.loading}
-            error={movement.error}
+            error={movement.error as boolean}
             icon='running'
           />
         </div>
@@ -152,7 +152,7 @@ export function DataPanel() {
             description='Sala 2'
             data={`Lâmpada ${luminosity.luminosity ? 'acesa' : 'apagada'}`}
             loading={luminosity.loading}
-            error={luminosity.error}
+            error={luminosity.error as boolean}
             icon={luminosity.luminosity ? 'sun' : 'moon'}
           />
         </div>

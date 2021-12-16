@@ -8,9 +8,9 @@ export function Toggler(props: TogglerProps) {
       <small>{props.title}</small>
       <Form.Check
         type='switch'
-        label={props.labelFn()}
+        label={props.checked ? props.checkedLabel : props.uncheckedLabel}
         className='m-auto'
-        checked={props.checkedFn()}
+        checked={props.checked}
         onChange={props.onChangeFn}
         disabled={props.disabled}
       />

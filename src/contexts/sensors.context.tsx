@@ -1,17 +1,23 @@
 import React from 'react'
 import { useSensors } from '../hooks'
-import { AirConditionerHookModel } from '../models'
+import {
+  AirConditionerHookModel,
+  HumiditySensorHookModel,
+  LuminositySensorHookModel,
+  MovementSensorHookModel,
+  TemperatureSensorHookModel,
+} from '../models'
 
 export const SensorsContext = React.createContext({
   air: {} as AirConditionerHookModel,
-  humidity20: {} as any,
-  humidity21: {} as any,
-  humidity22: {} as any,
-  luminosity: {} as any,
-  movement: {} as any,
-  temperature20: {} as any,
-  temperature21: {} as any,
-  temperature22: {} as any,
+  humidity20: {} as HumiditySensorHookModel,
+  humidity21: {} as HumiditySensorHookModel,
+  humidity22: {} as HumiditySensorHookModel,
+  luminosity: {} as LuminositySensorHookModel,
+  movement: {} as MovementSensorHookModel,
+  temperature20: {} as TemperatureSensorHookModel,
+  temperature21: {} as TemperatureSensorHookModel,
+  temperature22: {} as TemperatureSensorHookModel,
 })
 
 export function SensorsContextProvider({ children }: any) {

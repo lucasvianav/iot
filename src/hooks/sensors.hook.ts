@@ -1,9 +1,10 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
 import { ResponseModel } from '../models'
-import { AirConditionerHookModel, AirConditionerRequestBodyModel } from '../models/sensors.models'
+import { AirConditionerHookModel, AirConditionerRequestBodyModel, AirConditionerResponseBodyModel, HumiditySensorHookModel, LuminositySensorHookModel, MovementSensorHookModel, TemperatureSensorHookModel } from '../models/sensors.models'
 import { Endpoints, getRoute } from '../utils'
 
+/** Query parameters for the sensors' requests. */
 const params = {
   params: {
     limit: 1,
@@ -11,21 +12,35 @@ const params = {
   },
 }
 
-const parseError = (err: any) => {
+/** Receives the error object and parses it's status and message. */
+const parseError = (err: any): ResponseModel => {
   const status = err?.response?.status || '???'
   const message = err?.response?.data?.detail || 'Erro desconhecido.'
 
   return { status, message }
 }
 
+/**
+* Set up a recurring GET request.
+*
+* @param args.endpoint
+* @param args.opts request options, like for `axios`
+* @param fn.setValue
+* @param fn.setLoading
+* @param fn.setError
+* @param fn.getData function to parse the desired data from the request's response
+* @param opts.delay how long one request should be spaced from the other (in ms, default `60000`)
+* @param opts.dependencies state variable that'll trigger a re-fetch ahead of time when their values change (default `[]`)
+* @typeParam T type of the desired value
+*/
 const useApi =
   <T>(
     args: { endpoint: string; opts?: any },
     fn: {
-      setValue: React.Dispatch<React.SetStateAction<T>>
+      setValue: React.Dispatch<React.SetStateAction<T>>|((arg: T) => void)
       setLoading: React.Dispatch<React.SetStateAction<boolean>>
       setError: React.Dispatch<React.SetStateAction<ResponseModel|boolean>>
-      getData: (response: { data: any }) => T
+      getData: (response: AxiosResponse) => T
     },
     opts: {
       delay?: number,
@@ -35,6 +50,7 @@ const useApi =
     opts.delay = opts.delay || 60000
     opts.dependencies = opts.dependencies || []
 
+    /** Make the request, parse the response and set all related values. */
     const fetch = () => {
       fn.setLoading(true)
       fn.setError(false)
@@ -45,6 +61,7 @@ const useApi =
         .finally(() => fn.setLoading(false))
     }
 
+    // sets the recurrent call for `fetch`
     useEffect(() => {
       fetch()
       const timer = setInterval(fetch, opts.delay)
@@ -52,6 +69,16 @@ const useApi =
     }, opts.dependencies)
   }
 
+/**
+* Makes a POST request. Should be called inside a promise.
+*
+* @param args.endpoint
+* @param args.body the request's body (won't be modified)
+* @param args.opts request options, like for `axios`
+* @param fn.callback will be called whenever the request is finished (either succeeds or fails)
+* @param fn.resolve resolve the promise
+* @param fn.reject reject the promise
+*/
 const postApi =
   (
     args: {
@@ -77,7 +104,7 @@ const postApi =
   }
 
 export const useSensors = {
-  temperature: (id: number) => {
+  temperature: (id: number): TemperatureSensorHookModel => {
     const [temperature, setTemperature] = useState(-1)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<ResponseModel|boolean>(false)
@@ -108,9 +135,17 @@ export const useSensors = {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<ResponseModel|boolean>(false)
 
+    // variable that'll be used to re-fetch the air-conditioner's
+    // data whenever the settings are updated
     const [refresh, setRefresh] = useState(false)
 
-    const setAirConditioner = (r: any) => {
+    /**
+     * Set alm of the air conditioner's settings based on the response received
+     * from the API.
+     *
+     * @param r the request's reponse data
+     */
+    const setAirConditioner = (r: AirConditionerResponseBodyModel) => {
       setOn(r.ONL)
       setOnEmpty(r.ONL_VAZIO)
       setTemperature(r.TEMPERATURA)
@@ -119,7 +154,7 @@ export const useSensors = {
       setCommandTimeout(r.T_CMD)
     }
 
-    useApi<number>(
+    useApi<AirConditionerResponseBodyModel>(
       { endpoint: getRoute(Endpoints.airConditionerGet) },
       {
         setValue: setAirConditioner,
@@ -127,16 +162,25 @@ export const useSensors = {
         setError,
         getData: r => r.data,
       },
-      { dependencies: [refresh] }
+      { dependencies: [refresh] } // re-fetch whenever `refresh`'s value changes
     )
 
-    const post = (body: AirConditionerRequestBodyModel) => (
+    /**
+    * Sends a request to the API to update the air conditioner's settings. Doesn't
+    * change `this.loading` and `this.error` values. Triggers the fetching again.
+    *
+    * @param body the POST HTTP request's body, should contain only edited properties
+    * @returns promise that'll be resolved if the request is successful and rejected otherwise
+    */
+    const update = (body: AirConditionerRequestBodyModel) => (
       new Promise<ResponseModel>((resolve, reject) => {
         postApi(
           { endpoint: getRoute(Endpoints.airConditionerPost), body },
           {
             resolve: () => {
               resolve({ status: 200, message: '' })
+
+              // changes the variables value to trigger a re-fetch
               setRefresh(!refresh)
             },
             reject,
@@ -154,12 +198,12 @@ export const useSensors = {
       on,
       onEmpty,
       commandTimeout,
-      post,
+      update,
       name: 'Ar-condicionado',
     }
   },
 
-  humidity: (id: number) => {
+  humidity: (id: number): HumiditySensorHookModel => {
     const [humidity, setHumidity] = useState(-1)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<ResponseModel|boolean>(false)
@@ -180,7 +224,7 @@ export const useSensors = {
     return { humidity, loading, error, name: `Sensor de Umidade ${id}` }
   },
 
-  movement: () => {
+  movement: (): MovementSensorHookModel => {
     const [movement, setMovement] = useState(false)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<ResponseModel|boolean>(false)
@@ -207,7 +251,7 @@ export const useSensors = {
     return { movement, loading, error, name: 'Sensor de Movimento' }
   },
 
-  luminosity: () => {
+  luminosity: (): LuminositySensorHookModel => {
     const [luminosity, setLuminosity] = useState(false)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<ResponseModel|boolean>(false)

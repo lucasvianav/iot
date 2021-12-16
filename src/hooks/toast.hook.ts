@@ -12,6 +12,7 @@ export const useToasts = () => {
     return () => clearInterval(timer)
   }, [])
 
+  /** Add a new open toast to the list. */
   const createToast = (toast: ToastModel) => {
     setToasts(toasts.concat([{...toast, open: true}]))
   }

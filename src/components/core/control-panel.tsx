@@ -20,7 +20,8 @@ export function ControlPanel() {
   const [edited, setEdited] = useState(false)
   const [globalLoading, setGlobalLoading] = useState(false)
 
-  const set = (setter: (...args: any[]) => any) => {
+  /** @returns function that calls `setter` as well as sets `edited` to true */
+  const getCaller = (setter: (...args: any[]) => any) => {
     const set = (...args: any[]) => {
       setter(...args)
       setEdited(true)
@@ -32,6 +33,7 @@ export function ControlPanel() {
   const colClasses = 'd-flex justify-content-center'
   const disabledConds = (air.error as boolean) || air.loading || globalLoading
 
+  /** Reset the forms' field to the curret actual values. */
   const reset = (force = true) => {
     if (!air.loading && (!edited || force)) {
       setOn(air.on)
@@ -44,6 +46,11 @@ export function ControlPanel() {
     }
   }
 
+  /**
+   * Save the forms' values by placing an HTTP request to the API, updating the
+   * air conditioner's settings and creating notifications (toasts) depending
+   * on the request's result.
+   */
   const save = () => {
     const body: AirConditionerRequestBodyModel = {
       temperature,
@@ -53,8 +60,9 @@ export function ControlPanel() {
       onEmpty,
       commandTimeout,
     }
-    let flag = false
+    let isBodyEmpty = true
 
+    // remove from `body` all field that weren't edited
     Object.keys(body).forEach((key: string) => {
       const airValue = (air as any)[key]
       const bodyValue = (body as any)[key]
@@ -62,15 +70,15 @@ export function ControlPanel() {
       if (airValue === bodyValue) {
         delete (body as any)[key]
       } else {
-        flag = true
+        isBodyEmpty = false
       }
     })
 
-    if (flag) {
+    if (!isBodyEmpty) {
       setGlobalLoading(true)
 
       air
-        .post(body)
+        .update(body)
         .then(() => {
           reset()
           createToast({
@@ -100,6 +108,9 @@ export function ControlPanel() {
     }
   }
 
+  // "reset" the forms whenever a new GET request is made to fetch the air
+  // conditioner's settings, but only if no fields were edited
+  // basically, syncs the forms whenever the settings are updated
   useEffect(() => reset(false), [air.error as boolean, air.loading])
 
   return (
@@ -110,9 +121,10 @@ export function ControlPanel() {
           <div className={`${colClasses} col-6`}>
             <Toggler
               title='Status'
-              labelFn={() => (on ? 'Ligado' : 'Desligado')}
-              checkedFn={() => on}
-              onChangeFn={() => set(setOn)(!on)}
+              checkedLabel='Ligado'
+              uncheckedLabel='Desligado'
+              checked={on}
+              onChangeFn={() => getCaller(setOn)(!on)}
               disabled={disabledConds}
             />
           </div>
@@ -120,9 +132,10 @@ export function ControlPanel() {
           <div className={`${colClasses} col-6`}>
             <Toggler
               title='Status (Sala Vazia)'
-              labelFn={() => (onEmpty ? 'Ligado' : 'Desligado')}
-              checkedFn={() => onEmpty}
-              onChangeFn={() => set(setOnEmpty)(!onEmpty)}
+              checkedLabel='Ligado'
+              uncheckedLabel='Desligado'
+              checked={onEmpty}
+              onChangeFn={() => getCaller(setOnEmpty)(!onEmpty)}
               disabled={!on || disabledConds}
             />
           </div>
@@ -133,7 +146,7 @@ export function ControlPanel() {
             <NumberControl
               title='Temperatura'
               value={on ? temperature : 'OFF'}
-              setterFn={set(setTemperature)}
+              setterFn={getCaller(setTemperature)}
               max={23}
               min={16}
               disabled={!on || disabledConds}
@@ -144,7 +157,7 @@ export function ControlPanel() {
           <div className={`${colClasses} col-6 col-md-3`}>
             <NumberControl
               title='Temp. Máxima (sala)'
-              setterFn={set(setMaxTemperature)}
+              setterFn={getCaller(setMaxTemperature)}
               max={23}
               min={17}
               value={on ? maxTemperature : 'OFF'}
@@ -156,7 +169,7 @@ export function ControlPanel() {
           <div className={`${colClasses} col-6 col-md-3`}>
             <NumberControl
               title='Temp. Mínima (sala)'
-              setterFn={set(setMinTemperature)}
+              setterFn={getCaller(setMinTemperature)}
               max={22}
               min={16}
               value={on ? minTemperature : 'OFF'}
@@ -168,7 +181,7 @@ export function ControlPanel() {
           <div className={`${colClasses} col-6 col-md-3`}>
             <NumberControl
               title='Timeout entre comandos'
-              setterFn={set(setCommandTimeout)}
+              setterFn={getCaller(setCommandTimeout)}
               max={10}
               min={1}
               value={commandTimeout}

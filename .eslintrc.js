@@ -108,11 +108,6 @@ module.exports = {
         functions: 'never',
       },
     ],
-    'capitalized-comments': [
-      'warn',
-      'never',
-      { ignoreConsecutiveComments: true },
-    ],
     'implicit-arrow-linebreak': ['error', 'beside'],
     indent: ['error', 2, { SwitchCase: 1 }],
     'jsx-quotes': ['error', 'prefer-single'],

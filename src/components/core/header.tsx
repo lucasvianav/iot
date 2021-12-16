@@ -6,6 +6,7 @@ import { enviroment } from '../../utils'
 export function Header(props: HeaderProps) {
   const [time, setTime] = useState(new Date())
 
+  // update the clock
   useEffect(() => {
     const timer = setInterval(
       () => setTime(new Date()),
