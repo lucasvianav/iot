@@ -25,3 +25,4 @@ Para instalar as dependências do projeto.
 ### `npm start`
 
 Para executar o projeto em modo de desenvolvimento. Abra [http://localhost:3000](http://localhost:3000) no seu *browser* para ver o *site*.
+
